@@ -14,13 +14,18 @@ function populateTable(movies) {
 
     movies.forEach(movie => {
         const row = document.createElement("tr");
+        
+        // Create star links
+        const starLinks = movie.stars?.map(star => 
+            `<a href="single-star.html?name=${encodeURIComponent(star)}">${star}</a>`
+        ).join(", ") ?? "N/A";
 
         row.innerHTML = `
-            <td>${movie.title}</td>
+            <td><a href="single-movie.html?id=${encodeURIComponent(movie.id)}">${movie.title}</a></td>
             <td>${movie.year}</td>
             <td>${movie.director}</td>
             <td>${movie.genres?.join(", ") ?? "N/A"}</td>
-            <td>${movie.stars?.join(", ") ?? "N/A"}</td>
+            <td>${starLinks}</td>
             <td>${movie.rating}</td>
         `;
 

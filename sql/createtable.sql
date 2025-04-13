@@ -73,9 +73,8 @@ CREATE TABLE sales (
 
 -- Table: ratings
 CREATE TABLE ratings (
-    movieId VARCHAR(10),
+    movieId VARCHAR(10) NOT NULL,
     rating FLOAT NOT NULL,
     numVotes INT NOT NULL,
-    PRIMARY KEY (movieId),
     FOREIGN KEY (movieId) REFERENCES movies(id)
 );
