@@ -20,8 +20,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 `<a href="single-star.html?name=${encodeURIComponent(star)}">${star}</a>`
             ).join(", ") ?? "N/A";
             document.getElementById("movie-stars").innerHTML = starLinks;
-            
-            document.getElementById("movie-rating").textContent = movie.rating;
+
+            document.getElementById("movie-rating").textContent = (movie.rating !== undefined)
+                ? Number(movie.rating).toFixed(1)
+                : "N/A";
         })
         .catch(error => {
             console.error("Error fetching movie details:", error);

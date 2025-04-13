@@ -19,7 +19,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (star.movies && star.movies.length > 0) {
                 star.movies.forEach(movie => {
                     const li = document.createElement("li");
-                    li.innerHTML = `<a href="single-movie.html?id=${encodeURIComponent(movie.id)}">${movie.title}</a>`;
+                    li.innerHTML = `<a href="single-movie.html?id=${encodeURIComponent(movie.id)}">${movie.title}</a> (${movie.year})`;
                     moviesList.appendChild(li);
                 });
             } else {

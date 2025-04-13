@@ -3,15 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Star Details</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
     <script src="js/single-star.js" defer></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #2c3e50;
+        }
+
+        h2 {
+            margin-top: 30px;
+            font-size: 1.4em;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            display: inline-block;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1 id="star-name">Loading...</h1>
-    <div id="star-details">
-        <p><strong>Birth Year:</strong> <span id="star-birth-year">-</span></p>
-        <h2>Movies:</h2>
-        <ul id="star-movies"></ul>
-    </div>
-    <p><a href="movie-list.html">Back to Movie List</a></p>
+<h1 id="star-name">Loading...</h1>
+<div id="star-details">
+    <p><strong>Birth Year:</strong> <span id="star-birth-year">-</span></p>
+    <h2>Movies</h2>
+    <ul id="star-movies"></ul>
+</div>
+<a class="back-link" href="movie-list.html">← Back to Movie List</a>
 </body>
-</html> 
+</html>

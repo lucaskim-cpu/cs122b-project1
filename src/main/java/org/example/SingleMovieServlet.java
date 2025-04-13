@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/movie")
 public class SingleMovieServlet extends HttpServlet {
@@ -25,7 +24,7 @@ public class SingleMovieServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-        
+
         try {
             String movieId = request.getParameter("id");
             if (movieId == null || movieId.trim().isEmpty()) {
@@ -37,9 +36,9 @@ public class SingleMovieServlet extends HttpServlet {
             DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
             Connection conn = ds.getConnection();
 
-            String query = "SELECT m.*, r.rating, " +
-                    "GROUP_CONCAT(DISTINCT g.name) as genres, " +
-                    "GROUP_CONCAT(DISTINCT s.name) as stars " +
+            String query = "SELECT m.id, m.title, m.year, m.director, r.rating, " +
+                    "GROUP_CONCAT(DISTINCT g.name) AS genres, " +
+                    "GROUP_CONCAT(DISTINCT s.name) AS stars " +
                     "FROM movies m " +
                     "LEFT JOIN ratings r ON m.id = r.movieId " +
                     "LEFT JOIN genres_in_movies gim ON m.id = gim.movieId " +
@@ -47,7 +46,7 @@ public class SingleMovieServlet extends HttpServlet {
                     "LEFT JOIN stars_in_movies sim ON m.id = sim.movieId " +
                     "LEFT JOIN stars s ON sim.starId = s.id " +
                     "WHERE m.id = ? " +
-                    "GROUP BY m.id";
+                    "GROUP BY m.id, m.title, m.year, m.director, r.rating";
 
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, movieId);
@@ -56,16 +55,16 @@ public class SingleMovieServlet extends HttpServlet {
             JSONObject movieJson = new JSONObject();
             if (rs.next()) {
                 movieJson.put("id", rs.getString("id"));
-                movieJson.put("title", rs.getString("title"));
-                movieJson.put("year", rs.getInt("year"));
-                movieJson.put("director", rs.getString("director"));
-                movieJson.put("rating", rs.getFloat("rating"));
-                
-                String[] genres = rs.getString("genres") != null ? 
-                    rs.getString("genres").split(",") : new String[0];
-                String[] stars = rs.getString("stars") != null ? 
-                    rs.getString("stars").split(",") : new String[0];
-                
+                movieJson.put("title", rs.getString("title") != null ? rs.getString("title") : "N/A");
+                movieJson.put("year", rs.getObject("year") != null ? rs.getInt("year") : 0);
+                movieJson.put("director", rs.getString("director") != null ? rs.getString("director") : "N/A");
+                movieJson.put("rating", rs.getObject("rating") != null ? rs.getFloat("rating") : 0.0);
+
+                String[] genres = rs.getString("genres") != null ?
+                        rs.getString("genres").split(",") : new String[0];
+                String[] stars = rs.getString("stars") != null ?
+                        rs.getString("stars").split(",") : new String[0];
+
                 movieJson.put("genres", genres);
                 movieJson.put("stars", stars);
             }
@@ -78,12 +77,12 @@ public class SingleMovieServlet extends HttpServlet {
             response.setStatus(200);
 
         } catch (Exception e) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("errorMessage", e.getMessage());
-            out.write(jsonObject.toString());
+            JSONObject error = new JSONObject();
+            error.put("errorMessage", e.getMessage());
+            out.write(error.toString());
             response.setStatus(500);
         } finally {
             out.close();
         }
     }
-} 
+}
