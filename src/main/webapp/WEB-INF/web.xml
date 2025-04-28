@@ -6,15 +6,28 @@
 
     <display-name>CS122B Project 1</display-name>
 
+    <resource-ref>
+        <description>MySQL DataSource example</description>
+        <res-ref-name>jdbc/moviedbexample</res-ref-name>
+        <res-type>jakarta.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
     <servlet>
-        <servlet-name>MovieServlet</servlet-name>
-        <servlet-class>org.example.MovieServlet</servlet-class>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>LoginServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>MovieServlet</servlet-name>
-        <url-pattern>/api/movielist</url-pattern>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/api/login</url-pattern>
     </servlet-mapping>
+
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
 
     <!-- Optional: welcome page -->
     <welcome-file-list>

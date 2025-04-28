@@ -23,7 +23,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version> <!-- Use 8.0.32 if you're running into errors -->
+            <version>8.0.32</version> <!-- Use 8.0.32 if you're running into errors -->
         </dependency>
 
         <!-- Servlet API (provided by Tomcat at runtime) -->
@@ -31,6 +31,14 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Annotation API -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -59,6 +67,30 @@
                 <version>3.1.0</version>
                 <configuration>
                     <mainClass>org.example.JDBC1</mainClass> <!-- Change to JDBC2 when needed -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://localhost:8080/manager/text</url>
+                    <server>TomcatServer</server>
+                    <path>/</path>
+                    <username>admin</username>
+                    <password>password</password>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat10-maven-plugin</artifactId>
+                <version>10.0.0-M5</version>
+                <configuration>
+                    <url>http://localhost:8080/manager/text</url>
+                    <server>TomcatServer</server>
+                    <path>/</path>
+                    <username>admin</username>
+                    <password>password</password>
                 </configuration>
             </plugin>
             <!-- WAR plugin to package the app -->
