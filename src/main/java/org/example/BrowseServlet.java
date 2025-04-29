@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +23,6 @@ import org.json.JSONObject;
  */
 @WebServlet(name = "BrowseServlet", urlPatterns = {"/api/browse"}, asyncSupported = true)
 public class BrowseServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

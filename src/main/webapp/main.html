@@ -4,35 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fabflix</title>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Fabflix</h1>
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="search.html">Search Movies</a></li>
-                    <li><a href="browse.html">Browse Movies</a></li>
-                    <li><a href="shopping-cart.html">Shopping Cart</a></li>
-                    <li class="login"><a href="login.html">Login</a></li>
-                </ul>
-            </nav>
-        </div>
+<body class="bg-gray-100 text-gray-900">
+    <header class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4">Fabflix</h1>
+        <nav class="mb-4">
+            <ul>
+                <li><a href="#" class="text-blue-500 hover:underline mr-4">Home</a></li>
+                <li><a href="search.html" class="text-blue-500 hover:underline mr-4">Search Movies</a></li>
+                <li><a href="browse.html" class="text-blue-500 hover:underline mr-4">Browse Movies</a></li>
+                <li><a href="shopping-cart.html" class="text-blue-500 hover:underline mr-4">Shopping Cart</a></li>
+                <li class="login"><a href="login.html" class="text-blue-500 hover:underline">Login</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <div class="container">
-        <h2>Welcome to Fabflix</h2>
-        <div class="movie-list">
-            <h3>Top 20 Rated Movies</h3>
-            <table class="table">
+    <div class="container mx-auto p-4">
+        <h2 class="text-2xl font-semibold mb-2">Welcome to Fabflix</h2>
+        <div class="movie-list mb-4">
+            <h3 class="text-2xl font-semibold mb-2">Top 20 Rated Movies</h3>
+            <table class="table-auto w-full mb-4">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Year</th>
-                        <th>Director</th>
-                        <th>Rating</th>
+                        <th class="px-4 py-2">Title</th>
+                        <th class="px-4 py-2">Year</th>
+                        <th class="px-4 py-2">Director</th>
+                        <th class="px-4 py-2">Rating</th>
                     </tr>
                 </thead>
                 <tbody id="movies">
@@ -40,30 +38,32 @@
                 </tbody>
             </table>
         </div>
-        <div class="search-container">
-            <h3>Search Movies</h3>
-            <form id="searchForm" method="POST" action="api/search">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title">
-                <label for="year">Year:</label>
-                <input type="text" id="year" name="year">
-                <label for="director">Director:</label>
-                <input type="text" id="director" name="director">
-                <label for="star">Star:</label>
-                <input type="text" id="star" name="star">
-                <button type="submit" class="button">Search</button>
+        <div class="search-container mb-4">
+            <h3 class="text-2xl font-semibold mb-2">Search Movies</h3>
+            <form id="searchForm" method="POST" action="api/search" class="flex flex-wrap mb-4">
+                <label for="title" class="mr-2">Title:</label>
+                <input type="text" id="title" name="title" class="border p-2 mr-2">
+                <label for="year" class="mr-2">Year:</label>
+                <input type="text" id="year" name="year" class="border p-2 mr-2">
+                <label for="director" class="mr-2">Director:</label>
+                <input type="text" id="director" name="director" class="border p-2 mr-2">
+                <label for="star" class="mr-2">Star:</label>
+                <input type="text" id="star" name="star" class="border p-2 mr-2">
+                <button type="submit" class="bg-blue-500 text-white p-2">Search</button>
             </form>
         </div>
 
-        <div class="browse-container">
-            <h3>Browse by Genre</h3>
-            <ul id="genres" class="browse-list">
+        <div class="browse-container mb-4">
+            <h3 class="text-2xl font-semibold mb-2">Browse by Genre</h3>
+            <ul id="genres" class="browse-list mb-4">
                 <!-- Genres will be dynamically loaded here -->
             </ul>
-            <h3>Browse by Title</h3>
-            <ul id="titles" class="browse-list">
-                <!-- Title initials will be dynamically loaded here -->
-            </ul>
+            <h3 class="text-2xl font-semibold mb-2">Browse by Title</h3>
+            <div class="flex flex-wrap">
+                <ul id="titles" class="browse-list">
+                    <!-- Title initials will be dynamically loaded here -->
+                </ul>
+            </div>
         </div>
     </div>
 
