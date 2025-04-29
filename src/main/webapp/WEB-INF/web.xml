@@ -19,7 +19,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/project1/api/login</url-pattern>
+        <url-pattern>/api/login</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -92,6 +92,15 @@
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/api/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CartServlet</servlet-name>
+        <servlet-class>org.example.CartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CartServlet</servlet-name>
+        <url-pattern>/api/cart</url-pattern>
     </servlet-mapping>
 
     <session-config>
