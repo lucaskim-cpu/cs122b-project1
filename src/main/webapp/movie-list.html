@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Top Rated Movies</title>
+    <title>Movie List</title>
     <script src="js/movielist.js" defer></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
     <style>
@@ -54,19 +54,94 @@
     </style>
 </head>
 <body>
-<h1>Top 20 Rated Movies</h1>
+<h1>Movie List</h1>
+<div>
+    <label for="sort">Sort by:</label>
+    <select id="sort" name="sort">
+        <option value="title">Title</option>
+        <option value="rating">Rating</option>
+    </select>
+
+    <label for="order">Order:</label>
+    <select id="order" name="order">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+
+    <label for="limit">Movies per page:</label>
+    <select id="limit" name="limit">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+</div>
+
 <table id="movie_table">
     <thead>
     <tr>
         <th>Title</th>
         <th>Year</th>
         <th>Director</th>
-        <th>Genres</th>
-        <th>Stars</th>
         <th>Rating</th>
     </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+    <!-- Movies will be dynamically loaded here -->
+    </tbody>
 </table>
+
+<div>
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const movieTable = document.getElementById('movie_table').getElementsByTagName('tbody')[0];
+        const sortSelect = document.getElementById('sort');
+        const orderSelect = document.getElementById('order');
+        const limitSelect = document.getElementById('limit');
+        const prevButton = document.getElementById('prev');
+        const nextButton = document.getElementById('next');
+
+        let currentPage = 0;
+
+        function fetchMovies() {
+            const sortBy = sortSelect.value;
+            const order = orderSelect.value;
+            const limit = limitSelect.value;
+            const offset = currentPage * limit;
+
+            fetch(`/api/top20?sortBy=${sortBy}&order=${order}&limit=${limit}&offset=${offset}`)
+                .then(response => response.json())
+                .then(data => {
+                    movieTable.innerHTML = '';
+                    data.forEach(movie => {
+                        const row = movieTable.insertRow();
+                        row.innerHTML = `<td>${movie.title}</td><td>${movie.year}</td><td>${movie.director}</td><td>${movie.rating}</td>`;
+                    });
+                });
+        }
+
+        sortSelect.addEventListener('change', fetchMovies);
+        orderSelect.addEventListener('change', fetchMovies);
+        limitSelect.addEventListener('change', fetchMovies);
+
+        prevButton.addEventListener('click', function() {
+            if (currentPage > 0) {
+                currentPage--;
+                fetchMovies();
+            }
+        });
+
+        nextButton.addEventListener('click', function() {
+            currentPage++;
+            fetchMovies();
+        });
+
+        fetchMovies();
+    });
+</script>
 </body>
 </html>

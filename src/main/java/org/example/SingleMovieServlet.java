@@ -16,7 +16,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/movie")
+/**
+ * A servlet that handles HTTP GET requests and returns a single movie's information in JSON format.
+ */
+@WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
     private static final long serialVersionUID = 2L;
 
@@ -40,33 +43,27 @@ public class SingleMovieServlet extends HttpServlet {
                     "GROUP_CONCAT(DISTINCT g.name) AS genres, " +
                     "GROUP_CONCAT(DISTINCT s.name) AS stars " +
                     "FROM movies m " +
-                    "LEFT JOIN ratings r ON m.id = r.movieId " +
+                    "JOIN ratings r ON m.id = r.movieId " +
                     "LEFT JOIN genres_in_movies gim ON m.id = gim.movieId " +
                     "LEFT JOIN genres g ON gim.genreId = g.id " +
                     "LEFT JOIN stars_in_movies sim ON m.id = sim.movieId " +
                     "LEFT JOIN stars s ON sim.starId = s.id " +
                     "WHERE m.id = ? " +
-                    "GROUP BY m.id, m.title, m.year, m.director, r.rating";
+                    "GROUP BY m.id";
 
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, movieId);
             ResultSet rs = stmt.executeQuery();
 
             JSONObject movieJson = new JSONObject();
+
             if (rs.next()) {
-                movieJson.put("id", rs.getString("id"));
-                movieJson.put("title", rs.getString("title") != null ? rs.getString("title") : "N/A");
-                movieJson.put("year", rs.getObject("year") != null ? rs.getInt("year") : 0);
-                movieJson.put("director", rs.getString("director") != null ? rs.getString("director") : "N/A");
-                movieJson.put("rating", rs.getObject("rating") != null ? rs.getFloat("rating") : 0.0);
-
-                String[] genres = rs.getString("genres") != null ?
-                        rs.getString("genres").split(",") : new String[0];
-                String[] stars = rs.getString("stars") != null ?
-                        rs.getString("stars").split(",") : new String[0];
-
-                movieJson.put("genres", genres);
-                movieJson.put("stars", stars);
+                movieJson.put("title", rs.getString("title"));
+                movieJson.put("year", rs.getInt("year"));
+                movieJson.put("director", rs.getString("director"));
+                movieJson.put("rating", rs.getDouble("rating"));
+                movieJson.put("genres", rs.getString("genres"));
+                movieJson.put("stars", rs.getString("stars"));
             }
 
             rs.close();

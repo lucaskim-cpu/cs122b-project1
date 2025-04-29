@@ -16,11 +16,22 @@ import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-@WebServlet(name = "SearchServlet", urlPatterns = "/api/search")
+/**
+ * A servlet that handles HTTP POST requests to the /api/search endpoint.
+ */
+@WebServlet(name = "SearchServlet", urlPatterns = {"/api/search"})
 public class SearchServlet extends HttpServlet {
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 
+    /**
+     * Handles HTTP POST requests to the /api/search endpoint.
+     *
+     * @param request  the HTTP request object
+     * @param response the HTTP response object
+     * @throws ServletException if there is a servlet-related error
+     * @throws IOException      if there is an I/O error
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
@@ -48,27 +59,26 @@ public class SearchServlet extends HttpServlet {
                 query.append(" AND m.director LIKE ?");
             }
             if (star != null && !star.isEmpty()) {
-                query.append(" AND EXISTS (SELECT 1 FROM stars s, stars_in_movies sm WHERE s.id = sm.starId AND sm.movieId = m.id AND s.name LIKE ?)");
+                query.append(" AND EXISTS (SELECT 1 FROM stars s, stars_in_movies sim WHERE s.id = sim.starId AND sim.movieId = m.id AND s.name LIKE ?)");
             }
 
             PreparedStatement statement = conn.prepareStatement(query.toString());
-            int index = 1;
+            int paramIndex = 1;
             if (title != null && !title.isEmpty()) {
-                statement.setString(index++, "%" + title + "%");
+                statement.setString(paramIndex++, "%" + title + "%");
             }
             if (year != null && !year.isEmpty()) {
-                statement.setString(index++, year);
+                statement.setInt(paramIndex++, Integer.parseInt(year));
             }
             if (director != null && !director.isEmpty()) {
-                statement.setString(index++, "%" + director + "%");
+                statement.setString(paramIndex++, "%" + director + "%");
             }
             if (star != null && !star.isEmpty()) {
-                statement.setString(index++, "%" + star + "%");
+                statement.setString(paramIndex++, "%" + star + "%");
             }
 
             ResultSet rs = statement.executeQuery();
             JSONArray movies = new JSONArray();
-
             while (rs.next()) {
                 JSONObject movie = new JSONObject();
                 movie.put("title", rs.getString("title"));

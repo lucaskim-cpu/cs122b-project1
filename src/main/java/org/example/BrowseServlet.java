@@ -16,7 +16,13 @@ import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-@WebServlet(name = "BrowseServlet", urlPatterns = "/api/browse")
+/**
+ * A servlet that handles HTTP GET requests to the /form url.
+ * @author runhaoz
+ * @version 1.0
+ * @date 24/10/16
+ */
+@WebServlet(name = "BrowseServlet", urlPatterns = {"/api/browse"}, asyncSupported = true)
 public class BrowseServlet extends HttpServlet {
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
@@ -38,9 +44,8 @@ public class BrowseServlet extends HttpServlet {
             }
 
             PreparedStatement statement = conn.prepareStatement(query.toString());
-            int index = 1;
             if (initial != null && !initial.isEmpty() && !initial.equals("*")) {
-                statement.setString(index++, initial + "%");
+                statement.setString(1, initial + "%");
             }
 
             ResultSet rs = statement.executeQuery();

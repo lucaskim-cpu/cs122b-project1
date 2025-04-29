@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
-@WebServlet(name = "MovieServlet", urlPatterns = "/api/movielist")
+@WebServlet(name = "MovieServlet", urlPatterns = {"/api/movielist"})
 public class MovieServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

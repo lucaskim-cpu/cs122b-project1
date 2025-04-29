@@ -17,7 +17,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet(name = "SingleStarServlet", urlPatterns = "/api/star")
+/**
+ * Servlet implementation class SingleStarServlet
+ */
+@WebServlet(name = "SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
     private static final long serialVersionUID = 3L;
 
@@ -44,37 +47,36 @@ public class SingleStarServlet extends HttpServlet {
             ResultSet starRs = starStmt.executeQuery();
 
             JSONObject starJson = new JSONObject();
+
             if (starRs.next()) {
-                starJson.put("id", starRs.getString("id"));
                 starJson.put("name", starRs.getString("name"));
                 starJson.put("birthYear", starRs.getInt("birthYear"));
-
-                // Get movies for this star
-                String movieQuery = "SELECT m.id, m.title, m.year, m.director " +
-                        "FROM stars s " +
-                        "JOIN stars_in_movies sim ON s.id = sim.starId " +
-                        "JOIN movies m ON sim.movieId = m.id " +
-                        "WHERE s.name = ?";
-                
-                PreparedStatement movieStmt = conn.prepareStatement(movieQuery);
-                movieStmt.setString(1, starName);
-                ResultSet movieRs = movieStmt.executeQuery();
-
-                JSONArray movies = new JSONArray();
-                while (movieRs.next()) {
-                    JSONObject movie = new JSONObject();
-                    movie.put("id", movieRs.getString("id"));
-                    movie.put("title", movieRs.getString("title"));
-                    movie.put("year", movieRs.getInt("year"));
-                    movie.put("director", movieRs.getString("director"));
-                    movies.put(movie);
-                }
-                starJson.put("movies", movies);
-
-                movieRs.close();
-                movieStmt.close();
             }
 
+            // Then get movies the star has acted in
+            String movieQuery = "SELECT m.id, m.title, m.year, m.director, r.rating FROM movies m " +
+                    "JOIN stars_in_movies sim ON m.id = sim.movieId " +
+                    "JOIN stars s ON sim.starId = s.id " +
+                    "JOIN ratings r ON m.id = r.movieId " +
+                    "WHERE s.name = ? ORDER BY m.year DESC";
+            PreparedStatement movieStmt = conn.prepareStatement(movieQuery);
+            movieStmt.setString(1, starName);
+            ResultSet movieRs = movieStmt.executeQuery();
+
+            JSONArray movies = new JSONArray();
+
+            while (movieRs.next()) {
+                JSONObject movie = new JSONObject();
+                movie.put("title", movieRs.getString("title"));
+                movie.put("year", movieRs.getInt("year"));
+                movie.put("director", movieRs.getString("director"));
+                movie.put("rating", movieRs.getDouble("rating"));
+                movies.put(movie);
+            }
+            starJson.put("movies", movies);
+
+            movieRs.close();
+            movieStmt.close();
             starRs.close();
             starStmt.close();
             conn.close();
@@ -91,4 +93,4 @@ public class SingleStarServlet extends HttpServlet {
             out.close();
         }
     }
-} 
+}

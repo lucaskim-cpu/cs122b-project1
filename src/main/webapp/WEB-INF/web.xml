@@ -23,6 +23,69 @@
         <url-pattern>/api/login</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>SearchServlet</servlet-name>
+        <servlet-class>org.example.SearchServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/api/search</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BrowseServlet</servlet-name>
+        <servlet-class>org.example.BrowseServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BrowseServlet</servlet-name>
+        <url-pattern>/api/browse</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>MovieListServlet</servlet-name>
+        <servlet-class>org.example.MovieListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MovieListServlet</servlet-name>
+        <url-pattern>/api/top20</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GenreServlet</servlet-name>
+        <servlet-class>org.example.GenreServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GenreServlet</servlet-name>
+        <url-pattern>/api/genres</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SingleMovieServlet</servlet-name>
+        <servlet-class>org.example.SingleMovieServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SingleMovieServlet</servlet-name>
+        <url-pattern>/api/single-movie</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SingleStarServlet</servlet-name>
+        <servlet-class>org.example.SingleStarServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SingleStarServlet</servlet-name>
+        <url-pattern>/api/single-star</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProtectedServlet</servlet-name>
+        <servlet-class>org.example.ProtectedServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProtectedServlet</servlet-name>
+        <url-pattern>/protected</url-pattern>
+    </servlet-mapping>
+
     <session-config>
         <session-timeout>
             30

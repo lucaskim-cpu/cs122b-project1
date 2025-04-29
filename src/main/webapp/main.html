@@ -75,7 +75,7 @@
                     const movieList = document.getElementById('movies');
                     data.forEach(movie => {
                         const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${movie.title}</td><td>${movie.year}</td><td>${movie.director}</td><td>${movie.rating}</td>`;
+                        tr.innerHTML = `<td><a href="api/single-movie?id=${movie.id}">${movie.title}</a></td><td>${movie.year}</td><td>${movie.director}</td><td>${movie.rating}</td>`;
                         movieList.appendChild(tr);
                     });
                 })
