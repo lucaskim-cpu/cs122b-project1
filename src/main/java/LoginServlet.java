@@ -1,6 +1,7 @@
+package org.example;
+
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,10 +13,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-@WebServlet(name = "LoginServlet", urlPatterns = {"/api/login"})
+// Removed @WebServlet annotation to rely solely on web.xml for servlet mapping.
 public class LoginServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedbexample")
     private DataSource dataSource;
 
     private boolean validatePassword(String enteredPassword, String storedHash) {
@@ -35,28 +38,38 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
+    public void init() throws ServletException {
+        try {
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            dataSource = (DataSource) envCtx.lookup("jdbc/moviedbexample");
+        } catch (NamingException e) {
+            throw new ServletException("Cannot retrieve java:comp/env/jdbc/moviedbexample", e);
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
-        String enteredPassword = request.getParameter("password");
+        String password = request.getParameter("password");
 
         try (Connection conn = dataSource.getConnection()) {
             String query = "SELECT password FROM customers WHERE email = ?";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, email);
-            ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-                String storedHash = rs.getString("password");
-                if (validatePassword(enteredPassword, storedHash)) {
-                    request.getSession().setAttribute("user", email);
-                    response.sendRedirect("/project1/main.html");
-                } else {
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"status\": \"fail\", \"message\": \"Invalid email or password.\"}");
+            try (PreparedStatement statement = conn.prepareStatement(query)) {
+                statement.setString(1, email);
+                try (ResultSet rs = statement.executeQuery()) {
+                    if (rs.next()) {
+                        String storedHash = rs.getString("password");
+                        if (validatePassword(password, storedHash)) {
+                            request.getSession().setAttribute("user", email);
+                            response.sendRedirect("/project1/main.html");
+                        } else {
+                            response.sendRedirect("/project1/login.html?error=Invalid%20credentials");
+                        }
+                    } else {
+                        response.sendRedirect("/project1/login.html?error=Invalid%20credentials");
+                    }
                 }
-            } else {
-                response.setContentType("application/json");
-                response.getWriter().write("{\"status\": \"fail\", \"message\": \"Invalid email or password.\"}");
             }
         } catch (SQLException e) {
             throw new ServletException(e);

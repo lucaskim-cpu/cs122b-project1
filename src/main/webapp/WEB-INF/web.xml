@@ -15,12 +15,11 @@
 
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>LoginServlet</servlet-class>
+        <servlet-class>org.example.LoginServlet</servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/api/login</url-pattern>
+        <url-pattern>/project1/api/login</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -84,6 +83,15 @@
     <servlet-mapping>
         <servlet-name>ProtectedServlet</servlet-name>
         <url-pattern>/protected</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>org.example.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/api/logout</url-pattern>
     </servlet-mapping>
 
     <session-config>

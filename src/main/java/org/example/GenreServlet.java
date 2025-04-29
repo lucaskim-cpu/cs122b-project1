@@ -11,9 +11,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 // Removed @WebServlet annotation to rely solely on web.xml for servlet mapping.
 public class GenreServlet extends HttpServlet {
@@ -23,30 +23,23 @@ public class GenreServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-
-        try (Connection conn = dataSource.getConnection()) {
-            String query = "SELECT name FROM genres ORDER BY name";
-            PreparedStatement statement = conn.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();
-
-            JSONArray genres = new JSONArray();
-            while (rs.next()) {
-                JSONObject genre = new JSONObject();
-                genre.put("name", rs.getString("name"));
-                genres.put(genre);
+        JSONArray genresArray = new JSONArray();
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT id, name FROM genres")) {
+            while(rs.next()) {
+                JSONObject genreObj = new JSONObject();
+                genreObj.put("id", rs.getInt("id"));
+                genreObj.put("name", rs.getString("name"));
+                genresArray.put(genreObj);
             }
-
-            rs.close();
-            statement.close();
-
-            out.write(genres.toString());
-            response.setStatus(200);
-
-        } catch (SQLException e) {
+        } catch(Exception e) {
             e.printStackTrace();
-            response.setStatus(500);
-        } finally {
-            out.close();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
+        JSONObject result = new JSONObject();
+        result.put("genres", genresArray);
+        out.println(result.toString());
     }
 }

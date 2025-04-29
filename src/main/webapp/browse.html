@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Movies</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        #genres, #title-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #genres li, #title-buttons button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        #genres li:hover, #title-buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -29,6 +50,20 @@
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const genresList = document.getElementById('genres');
+            fetch('/api/genres')
+                .then(response => response.json())
+                .then(data => {
+                    data.genres.forEach(genre => {
+                        const li = document.createElement('li');
+                        li.textContent = genre.name;
+                        li.addEventListener('click', function() {
+                            window.location.href = `/api/browse?genre=${genre.name}`;
+                        });
+                        genresList.appendChild(li);
+                    });
+                });
+
             const titleButtonsDiv = document.getElementById('title-buttons');
             const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ*';
             letters.split('').forEach(letter => {

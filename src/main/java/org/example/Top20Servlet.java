@@ -24,6 +24,13 @@ public class Top20Servlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
+        // Temporarily bypass authentication for testing purposes.
+        // HttpSession session = request.getSession(false);
+        // if (session == null || session.getAttribute("user") == null) {
+        //     response.sendRedirect("login.html");
+        //     return;
+        // }
+
         try (Connection conn = dataSource.getConnection()) {
             String query = "SELECT m.title, m.year, m.director, r.rating FROM movies m, ratings r WHERE m.id = r.movieId ORDER BY r.rating DESC LIMIT 20";
             PreparedStatement statement = conn.prepareStatement(query);
