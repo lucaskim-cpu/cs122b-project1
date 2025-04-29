@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>Fabflix</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="main-container">
+    <header>
+        <div class="container">
+            <h1>Fabflix</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="search.html">Search Movies</a></li>
+                    <li><a href="browse.html">Browse Movies</a></li>
+                    <li><a href="shopping-cart.html">Shopping Cart</a></li>
+                    <li class="login"><a href="login.html">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
         <h2>Welcome to Fabflix</h2>
-        <nav>
-            <ul>
-                <li><a href="search.html">Search Movies</a></li>
-                <li><a href="browse.html">Browse Movies</a></li>
-                <li><a href="shopping-cart.html">Shopping Cart</a></li>
-            </ul>
-        </nav>
         <div class="movie-list">
             <h3>Top 20 Rated Movies</h3>
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -32,7 +40,33 @@
                 </tbody>
             </table>
         </div>
+        <div class="search-container">
+            <h3>Search Movies</h3>
+            <form id="searchForm" method="POST" action="api/search">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title">
+                <label for="year">Year:</label>
+                <input type="text" id="year" name="year">
+                <label for="director">Director:</label>
+                <input type="text" id="director" name="director">
+                <label for="star">Star:</label>
+                <input type="text" id="star" name="star">
+                <button type="submit" class="button">Search</button>
+            </form>
+        </div>
+
+        <div class="browse-container">
+            <h3>Browse by Genre</h3>
+            <ul id="genres" class="browse-list">
+                <!-- Genres will be dynamically loaded here -->
+            </ul>
+            <h3>Browse by Title</h3>
+            <ul id="titles" class="browse-list">
+                <!-- Title initials will be dynamically loaded here -->
+            </ul>
+        </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('api/top20')
@@ -46,6 +80,26 @@
                     });
                 })
                 .catch(error => console.error('Error fetching movies:', error));
+
+            fetch('api/genres')
+                .then(response => response.json())
+                .then(data => {
+                    const genreList = document.getElementById('genres');
+                    data.sort().forEach(genre => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="api/browse?genre=${genre}">${genre}</a>`;
+                        genreList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching genres:', error));
+
+            const titleList = document.getElementById('titles');
+            const initials = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ*'.split('');
+            initials.forEach(initial => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="api/browse?initial=${initial}">${initial}</a>`;
+                titleList.appendChild(li);
+            });
         });
     </script>
 </body>
