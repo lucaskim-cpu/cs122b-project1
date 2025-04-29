@@ -47,6 +47,9 @@ public class SearchServlet extends HttpServlet {
         String star = request.getParameter("star");
 
         try (Connection conn = dataSource.getConnection()) {
+            if (conn == null) {
+                throw new SQLException("Unable to establish a connection to the database.");
+            }
             StringBuilder query = new StringBuilder("SELECT m.title, m.year, m.director, r.rating FROM movies m, ratings r WHERE m.id = r.movieId");
 
             if (title != null && !title.isEmpty()) {
@@ -96,6 +99,9 @@ public class SearchServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            JSONObject error = new JSONObject();
+            error.put("errorMessage", e.getMessage());
+            out.write(error.toString());
             response.setStatus(500);
         } finally {
             out.close();
