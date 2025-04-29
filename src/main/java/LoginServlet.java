@@ -1,10 +1,10 @@
-import jakarta.annotation.Resource;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.sql.DataSource;
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
 
             if (rs.next()) {
                 request.getSession().setAttribute("user", email);
-                response.sendRedirect("main.html");
+                response.sendRedirect("/project1/main.html");
             } else {
                 response.setContentType("application/json");
                 response.getWriter().write("{\"status\": \"fail\", \"message\": \"Invalid email or password.\"}");

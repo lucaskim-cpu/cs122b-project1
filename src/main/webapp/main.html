@@ -16,6 +16,37 @@
                 <li><a href="shopping-cart.html">Shopping Cart</a></li>
             </ul>
         </nav>
+        <div class="movie-list">
+            <h3>Top 20 Rated Movies</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Year</th>
+                        <th>Director</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="movies">
+                    <!-- Movies will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('api/top20')
+                .then(response => response.json())
+                .then(data => {
+                    const movieList = document.getElementById('movies');
+                    data.forEach(movie => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${movie.title}</td><td>${movie.year}</td><td>${movie.director}</td><td>${movie.rating}</td>`;
+                        movieList.appendChild(tr);
+                    });
+                })
+                .catch(error => console.error('Error fetching movies:', error));
+        });
+    </script>
 </body>
 </html>

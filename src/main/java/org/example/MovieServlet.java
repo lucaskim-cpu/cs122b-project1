@@ -1,11 +1,11 @@
 // File: src/main/java/org/example/MovieServlet.java
 package org.example;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,6 +25,11 @@ public class MovieServlet extends HttpServlet {
 
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+
+        if (request.getSession().getAttribute("user") == null) {
+            response.sendRedirect("/project1/login.html");
+            return;
+        }
 
         try {
             Context initCtx = new InitialContext();
