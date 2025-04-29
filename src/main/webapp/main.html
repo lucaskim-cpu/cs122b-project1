@@ -18,6 +18,7 @@
                 <li class="login"><a href="login.html" class="text-blue-500 hover:underline">Login</a></li>
             </ul>
         </nav>
+        <button onclick="location.href='/shopping-cart.html'">Checkout</button>
     </header>
 
     <div class="container mx-auto p-4">
@@ -69,7 +70,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('api/top20')
+            fetch('/api/main')
                 .then(response => response.json())
                 .then(data => {
                     const movieList = document.getElementById('movies');

@@ -46,14 +46,42 @@
     </style>
 </head>
 <body>
-<h1 id="movie-title">Loading...</h1>
-<div id="movie-details">
-    <p><strong>Year:</strong> <span id="movie-year">-</span></p>
-    <p><strong>Director:</strong> <span id="movie-director">-</span></p>
-    <p><strong>Genres:</strong> <span id="movie-genres">-</span></p>
-    <p><strong>Stars:</strong> <span id="movie-stars">-</span></p>
-    <p><strong>Rating:</strong> <span id="movie-rating">-</span></p>
-</div>
-<p><a href="movie-list.html">← Back to Movie List</a></p>
+    <nav>
+        <button onclick="location.href='/shopping-cart.html'">Checkout</button>
+    </nav>
+    <h1>Movie Details</h1>
+    <div id="movie-details">
+        <!-- Movie details will be dynamically loaded here -->
+    </div>
+    <h2>Cast</h2>
+    <table id="cast-table">
+        <thead>
+        <tr>
+            <th>Star Name</th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Cast will be dynamically loaded here -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const movieId = new URLSearchParams(window.location.search).get('id');
+            fetch(`/api/movie?id=${movieId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const movieDetails = document.getElementById('movie-details');
+                    movieDetails.innerHTML = `<p>Title: ${data.title}</p><p>Year: ${data.year}</p><p>Director: ${data.director}</p><p>Rating: ${data.rating}</p>`;
+
+                    const castTable = document.getElementById('cast-table').getElementsByTagName('tbody')[0];
+                    data.cast.forEach(castMember => {
+                        const row = castTable.insertRow();
+                        row.innerHTML = `<td>${castMember.name}</td><td>${castMember.role}</td>`;
+                    });
+                });
+        });
+    </script>
 </body>
 </html>

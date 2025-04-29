@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <button onclick="location.href='/shopping-cart.html'">Checkout</button>
+    </nav>
+    <h1>Shopping Cart</h1>
+    <div id="cart-items">
+        <!-- Example item structure -->
+        <div class="cart-item" id="item-1">
+            <span class="item-title">Item Title</span>
+            <span class="item-quantity">Quantity: <span class="quantity-value">1</span></span>
+            <span class="item-price">Price: $<span class="price-value">10.00</span></span>
+            <button class="increase-btn">Increase</button>
+            <button class="decrease-btn">Decrease</button>
+            <button class="delete-btn">Delete</button>
+        </div>
+        <!-- Repeat for each item -->
+    </div>
+    <div id="total-price">
+        Total: $<span id="total-value">0.00</span>
+    </div>
+    <button id="proceed-to-payment" onclick="location.href='payment.html'">Proceed to Payment</button>
+
+    <script src="scripts.js"></script>
+</body>
+</html> 

@@ -5,6 +5,24 @@
     <title>Title</title>
 </head>
 <body>
-
+    <nav>
+        <button onclick="location.href='/shopping-cart.html'">Checkout</button>
+    </nav>
+    <h1>Welcome to the Movie Database</h1>
+    <p>Explore our extensive collection of movies and find your favorites.</p>
+    <div>
+        <h2>Top Movies</h2>
+        <ul id="top-movies">
+            <!-- Top movies will be dynamically loaded here -->
+        </ul>
+    </div>
+    <div>
+        <h2>Search Movies</h2>
+        <form id="search-form">
+            <label for="search">Search:</label>
+            <input type="text" id="search" name="search">
+            <button type="submit">Search</button>
+        </form>
+    </div>
 </body>
 </html>

@@ -1,3 +1,5 @@
+package org.example;
+
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

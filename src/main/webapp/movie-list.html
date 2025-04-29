@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie List</title>
     <script src="js/movielist.js" defer></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
@@ -54,94 +55,121 @@
     </style>
 </head>
 <body>
-<h1>Movie List</h1>
-<div>
-    <label for="sort">Sort by:</label>
-    <select id="sort" name="sort">
-        <option value="title">Title</option>
-        <option value="rating">Rating</option>
-    </select>
+    <nav>
+        <button onclick="location.href='/shopping-cart.html'">Checkout</button>
+    </nav>
+    <h1>Movie List</h1>
+    <div>
+        <label for="sort">Sort by:</label>
+        <select id="sort" name="sort">
+            <option value="title">Title</option>
+            <option value="rating">Rating</option>
+        </select>
 
-    <label for="order">Order:</label>
-    <select id="order" name="order">
-        <option value="asc">Ascending</option>
-        <option value="desc">Descending</option>
-    </select>
+        <label for="order">Order:</label>
+        <select id="order" name="order">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
 
-    <label for="limit">Movies per page:</label>
-    <select id="limit" name="limit">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-    </select>
-</div>
+        <label for="limit">Movies per page:</label>
+        <select id="limit" name="limit">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
 
-<table id="movie_table">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Year</th>
-        <th>Director</th>
-        <th>Rating</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Movies will be dynamically loaded here -->
-    </tbody>
-</table>
+    <table id="movie_table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Year</th>
+            <th>Director</th>
+            <th>Rating</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Movies will be dynamically loaded here -->
+        </tbody>
+    </table>
 
-<div>
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
-</div>
+    <div>
+        <button id="prev">Previous</button>
+        <button id="next">Next</button>
+    </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const movieTable = document.getElementById('movie_table').getElementsByTagName('tbody')[0];
-        const sortSelect = document.getElementById('sort');
-        const orderSelect = document.getElementById('order');
-        const limitSelect = document.getElementById('limit');
-        const prevButton = document.getElementById('prev');
-        const nextButton = document.getElementById('next');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const movieTable = document.getElementById('movie_table').getElementsByTagName('tbody')[0];
+            const sortSelect = document.getElementById('sort');
+            const orderSelect = document.getElementById('order');
+            const limitSelect = document.getElementById('limit');
+            const prevButton = document.getElementById('prev');
+            const nextButton = document.getElementById('next');
 
-        let currentPage = 0;
+            let currentPage = 0;
 
-        function fetchMovies() {
-            const sortBy = sortSelect.value;
-            const order = orderSelect.value;
-            const limit = limitSelect.value;
-            const offset = currentPage * limit;
+            function fetchMovies() {
+                const sortBy = sortSelect.value;
+                const order = orderSelect.value;
+                const limit = limitSelect.value;
+                const offset = currentPage * limit;
 
-            fetch(`/api/top20?sortBy=${sortBy}&order=${order}&limit=${limit}&offset=${offset}`)
-                .then(response => response.json())
-                .then(data => {
-                    movieTable.innerHTML = '';
-                    data.forEach(movie => {
-                        const row = movieTable.insertRow();
-                        row.innerHTML = `<td>${movie.title}</td><td>${movie.year}</td><td>${movie.director}</td><td>${movie.rating}</td>`;
+                fetch(`/api/top20?sortBy=${sortBy}&order=${order}&limit=${limit}&offset=${offset}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        movieTable.innerHTML = '';
+                        data.forEach(movie => {
+                            const row = movieTable.insertRow();
+                            row.innerHTML = `<td>${movie.title}</td><td>${movie.year}</td><td>${movie.director}</td><td>${movie.rating}</td><td><button class="add-to-cart-btn" data-movie-id="${movie.id}">Add to Cart</button></td>`;
+                        });
                     });
-                });
-        }
-
-        sortSelect.addEventListener('change', fetchMovies);
-        orderSelect.addEventListener('change', fetchMovies);
-        limitSelect.addEventListener('change', fetchMovies);
-
-        prevButton.addEventListener('click', function() {
-            if (currentPage > 0) {
-                currentPage--;
-                fetchMovies();
             }
-        });
 
-        nextButton.addEventListener('click', function() {
-            currentPage++;
+            sortSelect.addEventListener('change', fetchMovies);
+            orderSelect.addEventListener('change', fetchMovies);
+            limitSelect.addEventListener('change', fetchMovies);
+
+            prevButton.addEventListener('click', function() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    fetchMovies();
+                }
+            });
+
+            nextButton.addEventListener('click', function() {
+                currentPage++;
+                fetchMovies();
+            });
+
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const movieId = this.getAttribute('data-movie-id');
+                    const title = this.parentElement.querySelector('td').textContent;
+
+                    fetch('/api/cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `action=add&item=${movieId}&title=${encodeURIComponent(title)}`
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Added to cart successfully!');
+                        } else {
+                            alert('Failed to add to cart.');
+                        }
+                    })
+                    .catch(error => alert('Error adding to cart: ' + error));
+                });
+            });
+
             fetchMovies();
         });
-
-        fetchMovies();
-    });
-</script>
+    </script>
 </body>
 </html>
