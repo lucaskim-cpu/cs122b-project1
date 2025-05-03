@@ -14,14 +14,14 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         
         // TODO: Replace with actual authentication logic
-        boolean isValidUser = "admin".equals(username) && "password".equals(password);
+        boolean isValidUser = "a2@email.com".equals(username) && "a2".equals(password);
         
         if (isValidUser) {
             HttpSession session = request.getSession();
             session.setAttribute("user", username);
-            response.sendRedirect("main.html");
+            response.sendRedirect(request.getContextPath() + "/main.html");
         } else {
-            response.sendRedirect("login.html?error=Invalid username or password");
+            response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+username+or+password");
         }
     }
 } 

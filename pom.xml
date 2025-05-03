@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>project2</artifactId>
+    <artifactId>ROOT</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -72,7 +72,7 @@
     </dependencies>
 
     <build>
-        <finalName>project2</finalName>
+        <finalName>ROOT</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -97,7 +97,7 @@
                 <configuration>
                     <url>http://localhost:8080/manager/text</url>
                     <server>TomcatServer</server>
-                    <path>/project2</path>
+                    <path>/</path>
                     <username>admin</username>
                     <password>password</password>
                 </configuration>
