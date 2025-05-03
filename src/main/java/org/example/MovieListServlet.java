@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "MovieListServlet", urlPatterns = {"/api/top20"})
 public class MovieListServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedb")
+    @Resource(name = "jdbc/moviedbexample")
     private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,7 +28,7 @@ public class MovieListServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         if (request.getSession().getAttribute("user") == null) {
-            response.sendRedirect("/project1/login.html");
+            response.sendRedirect("/login.html");
             return;
         }
 
