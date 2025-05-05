@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "MovieListServlet", urlPatterns = {"/api/top20"})
 public class MovieListServlet extends HttpServlet {
-    @Resource(name = "jdbc/moviedbexample")
+    @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -31,6 +31,8 @@ public class MovieListServlet extends HttpServlet {
             response.sendRedirect("/login.html");
             return;
         }
+        System.out.println("🟡 DEBUG: Entering MovieListServlet");
+System.out.println("🟡 DataSource is null? " + (dataSource == null));
 
         try (Connection conn = dataSource.getConnection()) {
             String query = "SELECT m.title, m.year, m.director, r.rating FROM movies m, ratings r WHERE m.id = r.movieId ORDER BY r.rating DESC LIMIT 20";

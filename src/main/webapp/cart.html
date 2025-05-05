@@ -112,7 +112,7 @@
 
     <script>
         function updateCart() {
-            fetch('api/cart')
+            fetch('/api/cart')
                 .then(response => response.json())
                 .then(data => {
                     const cartContent = document.getElementById('cart-content');

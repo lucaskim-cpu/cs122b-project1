@@ -16,14 +16,25 @@
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .nav-links {
             margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
         }
         .nav-links a {
             margin-right: 20px;
             color: #007bff;
             text-decoration: none;
+        }
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
         }
         .container {
             max-width: 1200px;
@@ -35,12 +46,6 @@
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .search-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-bottom: 10px;
         }
         .search-form input {
             padding: 8px;
@@ -107,6 +112,18 @@
         th {
             background-color: #f8f9fa;
         }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .search-form {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -114,11 +131,18 @@
         <h1>Fabflix</h1>
         <div class="nav-links">
             <a href="main.html">Home</a>
-            <a href="#search">Search Movies</a>
-            <a href="#browse">Browse Movies</a>
+            <a href="search.html">Search Movies</a>
+            <a href="browse.html">Browse Movies</a>
             <a href="cart.html">Shopping Cart</a>
             <a href="login.html">Login</a>
         </div>
+        <form class="search-form" action="/api/search" method="GET">
+            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="year" placeholder="Year">
+            <input type="text" name="director" placeholder="Director">
+            <input type="text" name="star" placeholder="Star">
+            <button type="submit">Search</button>
+        </form>
     </div>
 
     <div class="container">
@@ -141,17 +165,6 @@
                     <!-- Movie data will be populated here -->
                 </tbody>
             </table>
-        </div>
-
-        <div class="section" id="search">
-            <h2>Search Movies</h2>
-            <form class="search-form" action="api/search" method="GET">
-                <input type="text" name="title" placeholder="Title">
-                <input type="text" name="year" placeholder="Year">
-                <input type="text" name="director" placeholder="Director">
-                <input type="text" name="star" placeholder="Star">
-                <button type="submit">Search</button>
-            </form>
         </div>
 
         <div class="section" id="browse">
@@ -227,7 +240,7 @@
 
     <script>
         // Fetch and display top 20 movies
-        fetch('api/top20')
+        fetch('/api/top20')
             .then(response => response.json())
             .then(movies => {
                 const tableBody = document.getElementById('movieTableBody');
