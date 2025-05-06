@@ -119,7 +119,7 @@ Examples:
    ```bash
    cd ~/project2
    mvn clean package
-   cp target/project1.war /var/lib/tomcat/webapps/
+   cp target/ROOT.war /var/lib/tomcat/webapps/
    ```
 4. Navigate to `http://54.183.57.170:8080/project2/main.html` in a browser
 

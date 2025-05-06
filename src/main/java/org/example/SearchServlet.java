@@ -36,7 +36,7 @@ public class SearchServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         if (request.getSession().getAttribute("user") == null) {
-            response.sendRedirect("/project1/login.html");
+            response.sendRedirect("/login.html");
             return;
         }
 

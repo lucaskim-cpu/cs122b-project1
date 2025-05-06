@@ -134,7 +134,7 @@
             <a href="search.html">Search Movies</a>
             <a href="browse.html">Browse Movies</a>
             <a href="cart.html">Shopping Cart</a>
-            <a href="login.html">Login</a>
+            <a id="login-link" href="login.html">Login</a>
         </div>
         <form class="search-form" action="/api/search" method="GET">
             <input type="text" name="title" placeholder="Title">
@@ -256,6 +256,22 @@
                 });
             })
             .catch(error => console.error('Error:', error));
+    </script>
+
+    <script>
+        // Check if user is logged in
+        const isLoggedIn = sessionStorage.getItem('loggedIn');
+        const loginLink = document.getElementById('login-link');
+
+        if (isLoggedIn) {
+            loginLink.textContent = 'Logout';
+            loginLink.href = '/logout';
+            loginLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                sessionStorage.removeItem('loggedIn');
+                window.location.href = '/login.html';
+            });
+        }
     </script>
 </body>
 </html>
