@@ -78,3 +78,6 @@ CREATE TABLE ratings (
     numVotes INT NOT NULL,
     FOREIGN KEY (movieId) REFERENCES movies(id)
 );
+INSERT INTO customers (firstName, lastName, ccId, address, email, password)
+VALUES ('A2', 'Test', NULL, '519 E peltason dr.', 'a2@email.com', 'a2');
+
