@@ -239,39 +239,58 @@
     </div>
 
     <script>
-        // Fetch and display top 20 movies
-        fetch('/api/top20')
-            .then(response => response.json())
-            .then(movies => {
-                const tableBody = document.getElementById('movieTableBody');
-                movies.forEach(movie => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><a href="movie.html?id=${movie.id}">${movie.title}</a></td>
-                        <td>${movie.year}</td>
-                        <td>${movie.director}</td>
-                        <td>${movie.rating}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+        document.addEventListener("DOMContentLoaded", function () {
+            // Session check & dynamic logout button
+            fetch("api/session-check", {
+                credentials: "include"
             })
-            .catch(error => console.error('Error:', error));
-    </script>
-
-    <script>
-        // Check if user is logged in
-        const isLoggedIn = sessionStorage.getItem('loggedIn');
-        const loginLink = document.getElementById('login-link');
-
-        if (isLoggedIn) {
-            loginLink.textContent = 'Logout';
-            loginLink.href = '/logout';
-            loginLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                sessionStorage.removeItem('loggedIn');
-                window.location.href = '/login.html';
+            .then(response => response.json())
+            .then(data => {
+                const nav = document.querySelector(".nav-links");
+                const loginLink = document.getElementById("login-link");
+                if (loginLink) loginLink.remove();
+    
+                if (data.loggedIn) {
+                    const form = document.createElement("form");
+                    form.action = "api/logout";
+                    form.method = "POST";
+                    form.style.display = "inline";
+    
+                    const button = document.createElement("button");
+                    button.type = "submit";
+                    button.textContent = "Logout";
+                    form.appendChild(button);
+                    nav.appendChild(form);
+    
+                    // Fetch top 20 movies only if logged in
+                    fetch("/api/top20", {
+                        credentials: "include"
+                    })
+                    .then(response => response.json())
+                    .then(movies => {
+                        const tableBody = document.getElementById('movieTableBody');
+                        movies.forEach(movie => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td><a href="movie.html?id=${movie.id}">${movie.title}</a></td>
+                                <td>${movie.year}</td>
+                                <td>${movie.director}</td>
+                                <td>${movie.rating}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => console.error('Error loading movies:', error));
+    
+                } else {
+                    const loginAnchor = document.createElement("a");
+                    loginAnchor.href = "login.html";
+                    loginAnchor.textContent = "Login";
+                    loginAnchor.id = "login-link";
+                    nav.appendChild(loginAnchor);
+                }
             });
-        }
-    </script>
+        });
+        </script>
 </body>
 </html>

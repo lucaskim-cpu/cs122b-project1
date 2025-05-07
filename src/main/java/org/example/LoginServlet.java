@@ -12,8 +12,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 @WebServlet(name = "LoginServlet", urlPatterns = {"/api/login"})
 public class LoginServlet extends HttpServlet {
 
@@ -32,28 +30,31 @@ public class LoginServlet extends HttpServlet {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
+            
 
             if (rs.next()) {
-                String hashedPassword = rs.getString("password");
-
-                // Make sure it's a valid bcrypt hash before checking
-                if (hashedPassword != null && hashedPassword.startsWith("$2a$")) {
-                    if (BCrypt.checkpw(password, hashedPassword)) {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("user", email);
-                        response.sendRedirect(request.getContextPath() + "/main.html");
-                        return;
-                    }
+                String storedPassword = rs.getString("password");
+                System.out.println("👉 Submitted Email: " + email);
+                System.out.println("👉 Submitted Password: " + password);
+                System.out.println("👉 Stored Password from DB: " + storedPassword);
+                
+                if (storedPassword != null && storedPassword.equals(password)) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user", email);
+                    response.sendRedirect(request.getContextPath() + "/main.html");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+username+or+password");
                 }
+            } else {
+                response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+username+or+password");
             }
 
-            // Invalid login
-            response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+email+or+password");
+            rs.close();
+            statement.close();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            // Handle errors gracefully, not with a 500 page
-            response.sendRedirect(request.getContextPath() + "/login.html?error=Unexpected+error");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Login failed due to server error.");
         }
     }
 }
