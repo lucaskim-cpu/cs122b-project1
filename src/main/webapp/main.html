@@ -251,16 +251,23 @@
                 if (loginLink) loginLink.remove();
     
                 if (data.loggedIn) {
-                    const form = document.createElement("form");
-                    form.action = "api/logout";
-                    form.method = "POST";
-                    form.style.display = "inline";
-    
                     const button = document.createElement("button");
-                    button.type = "submit";
                     button.textContent = "Logout";
-                    form.appendChild(button);
-                    nav.appendChild(form);
+                    button.onclick = function () {
+                        fetch("api/logout", {
+                            method: "POST",
+                            credentials: "include"
+                        }).then(res => {
+                            if (res.redirected) {
+                                window.location.href = res.url;
+                            } else {
+                                window.location.href = "login.html"; // fallback
+                            }
+                        }).catch(err => {
+                            console.error("Logout failed:", err);
+                        });
+                    };
+                    nav.appendChild(button);
     
                     // Fetch top 20 movies only if logged in
                     fetch("/api/top20", {

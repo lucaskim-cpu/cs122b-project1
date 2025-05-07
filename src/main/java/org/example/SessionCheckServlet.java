@@ -13,9 +13,22 @@ public class SessionCheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-        boolean loggedIn = session != null && session.getAttribute("user") != null;
+        boolean loggedIn = (session != null && session.getAttribute("user") != null);
+
+        // Debugging info
+        System.out.println("Session exists: " + (session != null));
+        if (session != null) {
+            System.out.println("User in session: " + session.getAttribute("user"));
+        }
+
+        // Prevent caching so stale session info isn't reused
+        response.setHeader("Cache-Control", "no-store");
+        response.setHeader("Pragma", "no-cache");
 
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // Return correct JSON format
         response.getWriter().write("{\"loggedIn\": " + loggedIn + "}");
     }
 }

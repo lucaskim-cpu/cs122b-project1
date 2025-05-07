@@ -34,9 +34,6 @@ public class LoginServlet extends HttpServlet {
 
             if (rs.next()) {
                 String storedPassword = rs.getString("password");
-                System.out.println("👉 Submitted Email: " + email);
-                System.out.println("👉 Submitted Password: " + password);
-                System.out.println("👉 Stored Password from DB: " + storedPassword);
                 
                 if (storedPassword != null && storedPassword.equals(password)) {
                     HttpSession session = request.getSession();
