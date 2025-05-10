@@ -24,17 +24,26 @@ public class LoginServlet extends HttpServlet {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
+        // ✅ Verify reCAPTCHA
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            response.sendRedirect(request.getContextPath() + "/login.html?error=Failed+reCAPTCHA+verification");
+            return;
+        }
+
+        // ✅ Authenticate user
         try (Connection conn = dataSource.getConnection()) {
             String query = "SELECT password FROM customers WHERE email = ?";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
-            
 
             if (rs.next()) {
                 String storedPassword = rs.getString("password");
-                
+
                 if (storedPassword != null && storedPassword.equals(password)) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", email);
@@ -51,7 +60,7 @@ public class LoginServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Login failed due to server error.");
+            response.sendRedirect(request.getContextPath() + "/login.html?error=Login+failed+due+to+server+error");
         }
     }
 }
