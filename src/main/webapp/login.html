@@ -51,30 +51,40 @@
             text-align: center;
         }
     </style>
+
+    <!-- ✅ Google reCAPTCHA API script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
     <div class="login-container">
         <h2>Login</h2>
         <form method="POST" action="/api/login">
             <div class="form-group">
-                <label for="email">email:</label>
-                <input type="text" id="email" name="email" placeholder="email" required>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" placeholder="Email" required>
             </div>
+
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
             </div>
+
+            <!-- ✅ reCAPTCHA widget wrapped in form-group -->
+            <div class="form-group">
+                <div class="g-recaptcha" data-sitekey="6Ld8aTQrAAAAACblsi4AmqbgD0vjPjrQHEHnPSmu"></div>
+            </div>
+
             <button type="submit">Login</button>
         </form>
         <div id="error" class="error"></div>
     </div>
 
     <script>
-        // Check for error message in URL parameters
+        // Show error from URL parameter if it exists
         const urlParams = new URLSearchParams(window.location.search);
         const error = urlParams.get('error');
         if (error) {
-            document.getElementById('error').textContent = error;
+            document.getElementById('error').textContent = decodeURIComponent(error.replace(/\+/g, ' '));
         }
     </script>
 </body>

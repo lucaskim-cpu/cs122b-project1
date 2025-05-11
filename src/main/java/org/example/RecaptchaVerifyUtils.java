@@ -1,3 +1,5 @@
+package org.example;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javax.net.ssl.HttpsURLConnection;
