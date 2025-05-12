@@ -75,11 +75,6 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-            <version>0.4</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -98,7 +93,10 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>org.example.JDBC1</mainClass> <!-- Change to JDBC2 when needed -->
+                    <mainClass>org.example.MovieDomParser</mainClass> <!-- Change to JDBC2 when needed -->
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                    <includePluginDependencies>false</includePluginDependencies>
+                    <classpathScope>compile</classpathScope>
                 </configuration>
             </plugin>
             <plugin>

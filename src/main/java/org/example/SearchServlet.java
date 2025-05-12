@@ -49,20 +49,34 @@ public class SearchServlet extends HttpServlet {
             if (conn == null) {
                 throw new SQLException("Unable to establish a connection to the database.");
             }
-            StringBuilder query = new StringBuilder("SELECT m.title, m.year, m.director, r.rating FROM movies m, ratings r WHERE m.id = r.movieId");
+
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT m.id, m.title, m.year, m.director, IFNULL(r.rating, 0.0) AS rating, ");
+            query.append("GROUP_CONCAT(DISTINCT s.name SEPARATOR ', ') AS stars ");
+            query.append("FROM movies m ");
+            query.append("LEFT JOIN ratings r ON m.id = r.movieId ");
+            query.append("LEFT JOIN stars_in_movies sim ON m.id = sim.movieId ");
+            query.append("LEFT JOIN stars s ON sim.starId = s.id ");
+            query.append("WHERE 1 = 1 ");
 
             if (title != null && !title.isEmpty()) {
-                query.append(" AND m.title LIKE ?");
+                query.append("AND m.title LIKE ? ");
             }
             if (year != null && !year.isEmpty()) {
-                query.append(" AND m.year = ?");
+                query.append("AND m.year = ? ");
             }
             if (director != null && !director.isEmpty()) {
-                query.append(" AND m.director LIKE ?");
+                query.append("AND m.director LIKE ? ");
             }
             if (star != null && !star.isEmpty()) {
-                query.append(" AND EXISTS (SELECT 1 FROM stars s, stars_in_movies sim WHERE s.id = sim.starId AND sim.movieId = m.id AND s.name LIKE ?)");
+                query.append("AND EXISTS (");
+                query.append("SELECT 1 FROM stars s2 JOIN stars_in_movies sim2 ON s2.id = sim2.starId ");
+                query.append("WHERE sim2.movieId = m.id AND s2.name LIKE ? ");
+                query.append(") ");
             }
+
+            query.append("GROUP BY m.id, m.title, m.year, m.director, r.rating ");
+            query.append("ORDER BY m.title ASC LIMIT 100");
 
             PreparedStatement statement = conn.prepareStatement(query.toString());
             int paramIndex = 1;
@@ -87,6 +101,7 @@ public class SearchServlet extends HttpServlet {
                 movie.put("year", rs.getInt("year"));
                 movie.put("director", rs.getString("director"));
                 movie.put("rating", rs.getDouble("rating"));
+                movie.put("stars", rs.getString("stars") == null ? "" : rs.getString("stars"));
                 movies.put(movie);
             }
 
