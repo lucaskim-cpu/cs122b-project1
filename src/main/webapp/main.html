@@ -268,10 +268,11 @@
                     .then(response => response.json())
                     .then(movies => {
                         const tableBody = document.getElementById('movieTableBody');
+                        tableBody.innerHTML = "";
                         movies.forEach(movie => {
                             const row = document.createElement('tr');
                             row.innerHTML = `
-                                <td><a href="movie.html?id=${movie.id}">${movie.title}</a></td>
+                                <td><a href="movie.html?id=${encodeURIComponent(movie.id)}">${movie.title}</a></td>
                                 <td>${movie.year}</td>
                                 <td>${movie.director}</td>
                                 <td>${movie.rating}</td>

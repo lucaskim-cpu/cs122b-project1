@@ -51,97 +51,86 @@
         a:hover {
             text-decoration: underline;
         }
+
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        select {
+            margin: 0 10px;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
-<h1>Movie List</h1>
-<div>
-    <label for="sort">Sort by:</label>
-    <select id="sort" name="sort">
-        <option value="title">Title</option>
-        <option value="rating">Rating</option>
-    </select>
+    <h1>Movie List</h1>
+    <div class="controls">
+        <label for="sort">Sort by:</label>
+        <select id="sort">
+            <option value="title">Title</option>
+            <option value="rating">Rating</option>
+        </select>
 
-    <label for="order">Order:</label>
-    <select id="order" name="order">
-        <option value="asc">Ascending</option>
-        <option value="desc">Descending</option>
-    </select>
+        <label for="order">Order:</label>
+        <select id="order">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
 
-    <label for="limit">Movies per page:</label>
-    <select id="limit" name="limit">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-    </select>
-</div>
+        <label for="limit">Movies per page:</label>
+        <select id="limit">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+        </select>
+    </div>
 
-<table id="movie_table">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Year</th>
-        <th>Director</th>
-        <th>Rating</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Movies will be dynamically loaded here -->
-    </tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Year</th>
+                <th>Director</th>
+                <th>Rating</th>
+                <th>Stars</th>
+            </tr>
+        </thead>
+        <tbody id="movieResults"></tbody>
+    </table>
 
-<div>
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const movieTable = document.getElementById('movie_table').getElementsByTagName('tbody')[0];
-        const sortSelect = document.getElementById('sort');
-        const orderSelect = document.getElementById('order');
-        const limitSelect = document.getElementById('limit');
-        const prevButton = document.getElementById('prev');
-        const nextButton = document.getElementById('next');
-
-        let currentPage = 0;
-
+    <script>
         function fetchMovies() {
-            const sortBy = sortSelect.value;
-            const order = orderSelect.value;
-            const limit = limitSelect.value;
-            const offset = currentPage * limit;
+            const sort = document.getElementById("sort").value;
+            const order = document.getElementById("order").value;
+            const limit = document.getElementById("limit").value;
 
-            fetch(`/api/top20?sortBy=${sortBy}&order=${order}&limit=${limit}&offset=${offset}`)
+            fetch(`/api/movies?sort=${sort}&order=${order}&limit=${limit}`)
                 .then(response => response.json())
                 .then(data => {
-                    movieTable.innerHTML = '';
+                    const movieResults = document.getElementById("movieResults");
+                    movieResults.innerHTML = "";
                     data.forEach(movie => {
-                        const row = movieTable.insertRow();
-                        row.innerHTML = `<td>${movie.title}</td><td>${movie.year}</td><td>${movie.director}</td><td>${movie.rating}</td>`;
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td><a href="movie.html?id=${movie.id}">${movie.title}</a></td>
+                            <td>${movie.year}</td>
+                            <td>${movie.director}</td>
+                            <td>${movie.rating}</td>
+                            <td>${movie.stars}</td>
+                        `;
+                        movieResults.appendChild(row);
                     });
-                });
+                })
+                .catch(error => console.error("Error fetching movie data:", error));
         }
 
-        sortSelect.addEventListener('change', fetchMovies);
-        orderSelect.addEventListener('change', fetchMovies);
-        limitSelect.addEventListener('change', fetchMovies);
-
-        prevButton.addEventListener('click', function() {
-            if (currentPage > 0) {
-                currentPage--;
-                fetchMovies();
-            }
-        });
-
-        nextButton.addEventListener('click', function() {
-            currentPage++;
+        document.addEventListener("DOMContentLoaded", () => {
             fetchMovies();
+            document.getElementById("sort").addEventListener("change", fetchMovies);
+            document.getElementById("order").addEventListener("change", fetchMovies);
+            document.getElementById("limit").addEventListener("change", fetchMovies);
         });
-
-        fetchMovies();
-    });
-</script>
+    </script>
 </body>
 </html>

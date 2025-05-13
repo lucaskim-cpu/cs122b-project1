@@ -103,6 +103,33 @@
         <url-pattern>/api/cart</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>MovieDetailServlet</servlet-name>
+        <servlet-class>org.example.MovieDetailServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MovieDetailServlet</servlet-name>
+        <url-pattern>/api/movie</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>StarDetailServlet</servlet-name>
+        <servlet-class>org.example.StarDetailServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StarDetailServlet</servlet-name>
+        <url-pattern>/api/star</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SessionCheckServlet</servlet-name>
+        <servlet-class>org.example.SessionCheckServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SessionCheckServlet</servlet-name>
+        <url-pattern>/api/session-check</url-pattern>
+    </servlet-mapping>
+
     <session-config>
         <session-timeout>
             30
@@ -113,15 +140,6 @@
     <welcome-file-list>
         <welcome-file>movie-list.html</welcome-file>
     </welcome-file-list>
-    
-    <servlet>
-        <servlet-name>SessionCheckServlet</servlet-name>
-        <servlet-class>org.example.SessionCheckServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SessionCheckServlet</servlet-name>
-        <url-pattern>/api/session-check</url-pattern>
-    </servlet-mapping>
 
     <security-constraint>
         <web-resource-collection>
