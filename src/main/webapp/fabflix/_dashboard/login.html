@@ -85,28 +85,45 @@
                 formData.append('email', email);
                 formData.append('password', password);
 
-                const response = await fetch('/_dashboard/login', {
+                console.log('Sending login request to /fabflix/_dashboard/login');
+                const response = await fetch('/fabflix/_dashboard/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json'
                     },
+                    credentials: 'include',  // Important for sending/receiving cookies
                     body: formData.toString()
                 });
+                
+                console.log('Login response status:', response.status);
+                console.log('Login response headers:', Object.fromEntries(response.headers.entries()));
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`Expected JSON response but received ${contentType}`);
+                }
 
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    // Successful login
-                    window.location.href = '/fabflix/_dashboard/dashboard.html';
+                    // Successful login - use redirect URL from server if available
+                    window.location.href = data.redirect || '/fabflix/_dashboard/dashboard.html';
                 } else {
                     // Show error message
                     errorAlert.style.display = 'block';
                     errorAlert.textContent = data.message || 'Invalid email or password';
                 }
             } catch (error) {
+                console.error('Login error details:', error);
+                
+                // Show a more detailed error message to help with debugging
                 errorAlert.style.display = 'block';
-                errorAlert.textContent = 'An error occurred. Please try again.';
-                console.error('Login error:', error);
+                errorAlert.textContent = `Error: ${error.message || 'Unknown error'}. Please check console for details.`;
+                
+                // Log additional information
+                console.log('Current cookies:', document.cookie);
             }
 
             return false;

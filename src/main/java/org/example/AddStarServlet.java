@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-@WebServlet(name = "AddStarServlet", urlPatterns = {"/_dashboard/add-star"})
+@WebServlet(name = "AddStarServlet", urlPatterns = {"/fabflix/_dashboard/add-star"})
 public class AddStarServlet extends HttpServlet {
     
     @Override
@@ -27,8 +27,9 @@ public class AddStarServlet extends HttpServlet {
         
         // Check session
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
+        if (session == null || session.getAttribute("employee") == null) {
             System.out.println("❌ Unauthorized access attempt to add-star");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             out.write("{\"status\":\"error\",\"message\":\"Unauthorized access\"}");
             return;
         }
@@ -51,21 +52,36 @@ public class AddStarServlet extends HttpServlet {
             // Get database connection
             Connection conn = DatabaseConnection.getConnection();
             
-            // Insert new star
-            String sql = "INSERT INTO stars (name, birthYear) VALUES (?, ?)";
+            // First, get the maximum ID to generate a new one
+            String maxIdSql = "SELECT MAX(CAST(SUBSTRING(id, 3) AS UNSIGNED)) FROM stars WHERE id LIKE 'nm%'";
+            int maxId = 0;
+            try (PreparedStatement maxIdStmt = conn.prepareStatement(maxIdSql)) {
+                ResultSet rs = maxIdStmt.executeQuery();
+                if (rs.next()) {
+                    maxId = rs.getInt(1);
+                }
+            }
+            
+            // Generate new star ID
+            String newStarId = String.format("nm%07d", maxId + 1);
+            System.out.println("🔍 Generated new star ID: " + newStarId);
+            
+            // Insert new star with generated ID
+            String sql = "INSERT INTO stars (id, name, birthYear) VALUES (?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, name);
+                stmt.setString(1, newStarId);
+                stmt.setString(2, name);
                 if (birthYear != null) {
-                    stmt.setInt(2, birthYear);
+                    stmt.setInt(3, birthYear);
                 } else {
-                    stmt.setNull(2, java.sql.Types.INTEGER);
+                    stmt.setNull(3, java.sql.Types.INTEGER);
                 }
                 
                 int result = stmt.executeUpdate();
                 
                 if (result > 0) {
-                    System.out.println("✅ Star added successfully");
-                    out.write("{\"status\":\"success\",\"message\":\"Star added successfully\"}");
+                    System.out.println("✅ Star added successfully with ID: " + newStarId);
+                    out.write("{\"status\":\"success\",\"message\":\"Star added successfully\",\"starId\":\"" + newStarId + "\",\"name\":\"" + name + "\",\"birthYear\":" + (birthYear != null ? birthYear : "null") + "}");
                 } else {
                     System.out.println("❌ Failed to add star");
                     out.write("{\"status\":\"error\",\"message\":\"Failed to add star\"}");

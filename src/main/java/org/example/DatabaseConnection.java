@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/moviedb";
-    private static final String USER = "root";
-    private static final String PASS = "root";
+    private static final String USER = "mytestuser";
+    private static final String PASS = "My6$Password";
     
     public static Connection getConnection() throws SQLException {
         try {

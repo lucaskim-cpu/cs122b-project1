@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.json.JSONObject;
 
-@WebServlet(name = "MetadataServlet", urlPatterns = {"/_dashboard/metadata"})
+@WebServlet(name = "MetadataServlet", urlPatterns = {"/fabflix/_dashboard/metadata"})
 public class MetadataServlet extends HttpServlet {
     
     @Override
@@ -31,8 +31,9 @@ public class MetadataServlet extends HttpServlet {
         
         // Check session
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
+        if (session == null || session.getAttribute("employee") == null) {
             System.out.println("❌ Unauthorized access attempt to metadata");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             out.write("{\"status\":\"error\",\"message\":\"Unauthorized access\"}");
             return;
         }

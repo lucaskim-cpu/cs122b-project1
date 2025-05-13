@@ -169,3 +169,24 @@ buildNumber.properties
 
 # End of https://www.gitignore.io/api/java,maven,eclipse,java-web,intellij
 
+# Large data files
+sql/movie-data.sql
+*.dump
+*.sql.gz
+*.sql.zip
+*.csv
+*.dat
+*.backup
+
+# Local configuration files
+*.local.properties
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Logs
+logs/
+*.log.*
+

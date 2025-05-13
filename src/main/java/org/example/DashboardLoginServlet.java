@@ -7,17 +7,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Cookie;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "DashboardLoginServlet", urlPatterns = {"/_dashboard/login"})
+@WebServlet(name = "DashboardLoginServlet", urlPatterns = {"/fabflix/_dashboard/login"})
 public class DashboardLoginServlet extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Set response type to JSON
+        // Debug logging
+        System.out.println("\n[DEBUG] DashboardLoginServlet - doPost called");
+        System.out.println("[DEBUG] Request URL: " + request.getRequestURL());
+        System.out.println("[DEBUG] Context Path: " + request.getContextPath());
+        System.out.println("[DEBUG] Servlet Path: " + request.getServletPath());
+        
+        // Always set JSON content type
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         
@@ -25,21 +32,7 @@ public class DashboardLoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         
-        // Debug logging
-        System.out.println("\n🔍 DEBUG: Login attempt");
-        System.out.println("🔍 Email: " + email);
-        System.out.println("🔍 Password: " + password);
-        
-        // Log existing cookies
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            System.out.println("🔍 Existing cookies:");
-            for (Cookie cookie : cookies) {
-                System.out.println("  - " + cookie.getName() + " = " + cookie.getValue());
-            }
-        } else {
-            System.out.println("🔍 No existing cookies");
-        }
+        System.out.println("[DEBUG] Login attempt with email: " + email);
         
         // Hardcoded credentials check
         if ("test@email.com".equals(email) && "test123".equals(password)) {
@@ -48,26 +41,43 @@ public class DashboardLoginServlet extends HttpServlet {
             session.setAttribute("employee", email);
             session.setMaxInactiveInterval(30 * 60); // 30 minutes
             
-            // Debug logging
-            System.out.println("\n✅ Login successful");
-            System.out.println("✅ Session ID: " + session.getId());
-            System.out.println("✅ Session created: " + (session.isNew() ? "Yes" : "No"));
-            System.out.println("✅ Session timeout: " + session.getMaxInactiveInterval() + " seconds");
+            // Debug session info
+            System.out.println("[DEBUG] Created session with ID: " + session.getId());
+            System.out.println("[DEBUG] Set attribute 'employee' to: " + email);
+            System.out.println("[DEBUG] Session max inactive interval: " + session.getMaxInactiveInterval() + " seconds");
             
             // Set SameSite and Secure attributes for the session cookie
+            // Ensure the session cookie is properly configured
             String sessionCookie = response.getHeader("Set-Cookie");
+            System.out.println("[DEBUG] Original Set-Cookie header: " + sessionCookie);
+            
             if (sessionCookie != null) {
-                response.setHeader("Set-Cookie", sessionCookie + "; SameSite=None; Secure");
+                // Update the cookie with appropriate path, SameSite and Secure attributes
+                if (sessionCookie.contains("Path=/")) {
+                    // Replace default path with one that includes our application context
+                    sessionCookie = sessionCookie.replace("Path=/", "Path=/fabflix");
+                }
+                String newCookie = sessionCookie + "; SameSite=None; Secure";
+                response.setHeader("Set-Cookie", newCookie);
+                System.out.println("[DEBUG] Modified Set-Cookie header: " + newCookie);
+            } else {
+                System.out.println("[DEBUG] WARNING: No Set-Cookie header found to modify!");
+                
+                // Set a cookie manually with the correct path
+                Cookie cookie = new Cookie("JSESSIONID", session.getId());
+                cookie.setPath("/fabflix");  // Important: set path to match application context
+                cookie.setSecure(true);
+                cookie.setHttpOnly(true);
+                response.addCookie(cookie);
+                System.out.println("[DEBUG] Added manual cookie: JSESSIONID=" + session.getId() + " with path /fabflix");
             }
             
-            // Return success response
-            out.write("{\"status\":\"success\",\"message\":\"Login successful\"}");
+            // Return success response with redirect info
+            System.out.println("[DEBUG] Login successful, returning success JSON response");
+            out.write("{\"status\":\"success\",\"message\":\"Login successful\",\"redirect\":\"/fabflix/_dashboard/dashboard.html\"}");
         } else {
-            // Debug logging
-            System.out.println("\n❌ Login failed - Invalid credentials");
-            
             // Return error response
             out.write("{\"status\":\"error\",\"message\":\"Invalid email or password\"}");
         }
     }
-} 
+}
