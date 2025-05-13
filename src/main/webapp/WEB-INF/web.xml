@@ -120,7 +120,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>SessionCheckServlet</servlet-name>
-        <url-pattern>/api/session-check</url-pattern>
+        <url-pattern>/_dashboard/check-session</url-pattern>
     </servlet-mapping>
 
     <security-constraint>

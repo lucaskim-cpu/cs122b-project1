@@ -1,6 +1,6 @@
 package org.example;
 
-import org.mindrot.jbcrypt.BCrypt;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import java.sql.*;
 
@@ -8,19 +8,23 @@ public class PasswordHashUpdater {
 
     public static void main(String[] args) {
         String jdbcUrl = "jdbc:mysql://localhost:3306/moviedb";
-        String dbUser = "root"; // your DB user
-        String dbPassword = "yourpassword"; // your DB password
+        String dbUser = "mytestuser"; // ✅ Replace with your DB user
+        String dbPassword = "My6$Password"; // ✅ Replace with your DB password
 
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword)) {
             // Step 1: Query customers with plaintext passwords (not starting with $2a$)
-            String selectQuery = "SELECT id, password FROM customers WHERE password NOT LIKE '$2a$%'";
+            String selectQuery = "SELECT id, password FROM customers WHERE LENGTH(password) < 60";
             PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
             ResultSet rs = selectStmt.executeQuery();
+
+            StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
 
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String rawPassword = rs.getString("password");
-                String hashed = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
+
+                // ✅ Hash the plain password using StrongPasswordEncryptor
+                String hashed = encryptor.encryptPassword(rawPassword);
 
                 // Step 2: Update the password in DB
                 String updateQuery = "UPDATE customers SET password = ? WHERE id = ?";
@@ -29,13 +33,13 @@ public class PasswordHashUpdater {
                 updateStmt.setInt(2, id);
                 updateStmt.executeUpdate();
 
-                System.out.println("Updated password for user ID: " + id);
+                System.out.println("✅ Updated password for user ID: " + id);
                 updateStmt.close();
             }
 
             rs.close();
             selectStmt.close();
-            System.out.println("✅ All plaintext passwords have been hashed and updated.");
+            System.out.println("🎉 All plaintext passwords have been hashed and updated.");
 
         } catch (SQLException e) {
             e.printStackTrace();

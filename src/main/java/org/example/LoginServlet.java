@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
@@ -26,7 +28,6 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
-        // ✅ Verify reCAPTCHA
         try {
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
         } catch (Exception e) {
@@ -34,9 +35,8 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // ✅ Authenticate user
         try (Connection conn = dataSource.getConnection()) {
-            String query = "SELECT password FROM customers WHERE email = ?";
+            String query = "SELECT password FROM employees WHERE email = ?";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
@@ -44,13 +44,24 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 String storedPassword = rs.getString("password");
 
-                if (storedPassword != null && storedPassword.equals(password)) {
+                boolean loginSuccess = false;
+
+                // Special case for test user
+                if (email.equals("test@email.com") && storedPassword.equals(password)) {
+                    loginSuccess = true;
+                } else {
+                    StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+                    loginSuccess = passwordEncryptor.checkPassword(password, storedPassword);
+                }
+
+                if (loginSuccess) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", email);
                     response.sendRedirect(request.getContextPath() + "/main.html");
                 } else {
                     response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+username+or+password");
                 }
+
             } else {
                 response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+username+or+password");
             }
