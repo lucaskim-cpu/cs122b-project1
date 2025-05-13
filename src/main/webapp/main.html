@@ -131,12 +131,11 @@
         <h1>Fabflix</h1>
         <div class="nav-links">
             <a href="main.html">Home</a>
-            <a href="search.html">Search Movies</a>
-            <a href="browse.html">Browse Movies</a>
+            <a href="result.html">Results</a>
             <a href="cart.html">Shopping Cart</a>
             <a id="login-link" href="login.html">Login</a>
         </div>
-        <form class="search-form" action="/api/search" method="GET">
+        <form class="search-form" action="result.html" method="GET">
             <input type="text" name="title" placeholder="Title">
             <input type="text" name="year" placeholder="Year">
             <input type="text" name="director" placeholder="Director">
@@ -170,70 +169,70 @@
         <div class="section" id="browse">
             <h2>Browse by Title</h2>
             <div class="browse-buttons">
-                <a href="api/browse?startsWith=*" class="browse-button">*</a>
-                <a href="api/browse?startsWith=0" class="browse-button">0</a>
-                <a href="api/browse?startsWith=1" class="browse-button">1</a>
-                <a href="api/browse?startsWith=2" class="browse-button">2</a>
-                <a href="api/browse?startsWith=3" class="browse-button">3</a>
-                <a href="api/browse?startsWith=4" class="browse-button">4</a>
-                <a href="api/browse?startsWith=5" class="browse-button">5</a>
-                <a href="api/browse?startsWith=6" class="browse-button">6</a>
-                <a href="api/browse?startsWith=7" class="browse-button">7</a>
-                <a href="api/browse?startsWith=8" class="browse-button">8</a>
-                <a href="api/browse?startsWith=9" class="browse-button">9</a>
-                <a href="api/browse?startsWith=A" class="browse-button">A</a>
-                <a href="api/browse?startsWith=B" class="browse-button">B</a>
-                <a href="api/browse?startsWith=C" class="browse-button">C</a>
-                <a href="api/browse?startsWith=D" class="browse-button">D</a>
-                <a href="api/browse?startsWith=E" class="browse-button">E</a>
-                <a href="api/browse?startsWith=F" class="browse-button">F</a>
-                <a href="api/browse?startsWith=G" class="browse-button">G</a>
-                <a href="api/browse?startsWith=H" class="browse-button">H</a>
-                <a href="api/browse?startsWith=I" class="browse-button">I</a>
-                <a href="api/browse?startsWith=J" class="browse-button">J</a>
-                <a href="api/browse?startsWith=K" class="browse-button">K</a>
-                <a href="api/browse?startsWith=L" class="browse-button">L</a>
-                <a href="api/browse?startsWith=M" class="browse-button">M</a>
-                <a href="api/browse?startsWith=N" class="browse-button">N</a>
-                <a href="api/browse?startsWith=O" class="browse-button">O</a>
-                <a href="api/browse?startsWith=P" class="browse-button">P</a>
-                <a href="api/browse?startsWith=Q" class="browse-button">Q</a>
-                <a href="api/browse?startsWith=R" class="browse-button">R</a>
-                <a href="api/browse?startsWith=S" class="browse-button">S</a>
-                <a href="api/browse?startsWith=T" class="browse-button">T</a>
-                <a href="api/browse?startsWith=U" class="browse-button">U</a>
-                <a href="api/browse?startsWith=V" class="browse-button">V</a>
-                <a href="api/browse?startsWith=W" class="browse-button">W</a>
-                <a href="api/browse?startsWith=X" class="browse-button">X</a>
-                <a href="api/browse?startsWith=Y" class="browse-button">Y</a>
-                <a href="api/browse?startsWith=Z" class="browse-button">Z</a>
+                <a href="result.html?startsWith=*" class="browse-button">*</a>
+                <a href="result.html?startsWith=0" class="browse-button">0</a>
+                <a href="result.html?startsWith=1" class="browse-button">1</a>
+                <a href="result.html?startsWith=2" class="browse-button">2</a>
+                <a href="result.html?startsWith=3" class="browse-button">3</a>
+                <a href="result.html?startsWith=4" class="browse-button">4</a>
+                <a href="result.html?startsWith=5" class="browse-button">5</a>
+                <a href="result.html?startsWith=6" class="browse-button">6</a>
+                <a href="result.html?startsWith=7" class="browse-button">7</a>
+                <a href="result.html?startsWith=8" class="browse-button">8</a>
+                <a href="result.html?startsWith=9" class="browse-button">9</a>
+                <a href="result.html?startsWith=A" class="browse-button">A</a>
+                <a href="result.html?startsWith=B" class="browse-button">B</a>
+                <a href="result.html?startsWith=C" class="browse-button">C</a>
+                <a href="result.html?startsWith=D" class="browse-button">D</a>
+                <a href="result.html?startsWith=E" class="browse-button">E</a>
+                <a href="result.html?startsWith=F" class="browse-button">F</a>
+                <a href="result.html?startsWith=G" class="browse-button">G</a>
+                <a href="result.html?startsWith=H" class="browse-button">H</a>
+                <a href="result.html?startsWith=I" class="browse-button">I</a>
+                <a href="result.html?startsWith=J" class="browse-button">J</a>
+                <a href="result.html?startsWith=K" class="browse-button">K</a>
+                <a href="result.html?startsWith=L" class="browse-button">L</a>
+                <a href="result.html?startsWith=M" class="browse-button">M</a>
+                <a href="result.html?startsWith=N" class="browse-button">N</a>
+                <a href="result.html?startsWith=O" class="browse-button">O</a>
+                <a href="result.html?startsWith=P" class="browse-button">P</a>
+                <a href="result.html?startsWith=Q" class="browse-button">Q</a>
+                <a href="result.html?startsWith=R" class="browse-button">R</a>
+                <a href="result.html?startsWith=S" class="browse-button">S</a>
+                <a href="result.html?startsWith=T" class="browse-button">T</a>
+                <a href="result.html?startsWith=U" class="browse-button">U</a>
+                <a href="result.html?startsWith=V" class="browse-button">V</a>
+                <a href="result.html?startsWith=W" class="browse-button">W</a>
+                <a href="result.html?startsWith=X" class="browse-button">X</a>
+                <a href="result.html?startsWith=Y" class="browse-button">Y</a>
+                <a href="result.html?startsWith=Z" class="browse-button">Z</a>
             </div>
 
             <h2>Browse by Genre</h2>
             <div class="genres-grid">
-                <a href="api/browse?genre=Action" class="genre-button">Action</a>
-                <a href="api/browse?genre=Adult" class="genre-button">Adult</a>
-                <a href="api/browse?genre=Adventure" class="genre-button">Adventure</a>
-                <a href="api/browse?genre=Animation" class="genre-button">Animation</a>
-                <a href="api/browse?genre=Biography" class="genre-button">Biography</a>
-                <a href="api/browse?genre=Comedy" class="genre-button">Comedy</a>
-                <a href="api/browse?genre=Crime" class="genre-button">Crime</a>
-                <a href="api/browse?genre=Documentary" class="genre-button">Documentary</a>
-                <a href="api/browse?genre=Drama" class="genre-button">Drama</a>
-                <a href="api/browse?genre=Family" class="genre-button">Family</a>
-                <a href="api/browse?genre=Fantasy" class="genre-button">Fantasy</a>
-                <a href="api/browse?genre=History" class="genre-button">History</a>
-                <a href="api/browse?genre=Horror" class="genre-button">Horror</a>
-                <a href="api/browse?genre=Music" class="genre-button">Music</a>
-                <a href="api/browse?genre=Musical" class="genre-button">Musical</a>
-                <a href="api/browse?genre=Mystery" class="genre-button">Mystery</a>
-                <a href="api/browse?genre=Reality-TV" class="genre-button">Reality-TV</a>
-                <a href="api/browse?genre=Romance" class="genre-button">Romance</a>
-                <a href="api/browse?genre=Sci-Fi" class="genre-button">Sci-Fi</a>
-                <a href="api/browse?genre=Sport" class="genre-button">Sport</a>
-                <a href="api/browse?genre=Thriller" class="genre-button">Thriller</a>
-                <a href="api/browse?genre=War" class="genre-button">War</a>
-                <a href="api/browse?genre=Western" class="genre-button">Western</a>
+                <a href="result.html?genre=Action" class="genre-button">Action</a>
+                <a href="result.html?genre=Adult" class="genre-button">Adult</a>
+                <a href="result.html?genre=Adventure" class="genre-button">Adventure</a>
+                <a href="result.html?genre=Animation" class="genre-button">Animation</a>
+                <a href="result.html?genre=Biography" class="genre-button">Biography</a>
+                <a href="result.html?genre=Comedy" class="genre-button">Comedy</a>
+                <a href="result.html?genre=Crime" class="genre-button">Crime</a>
+                <a href="result.html?genre=Documentary" class="genre-button">Documentary</a>
+                <a href="result.html?genre=Drama" class="genre-button">Drama</a>
+                <a href="result.html?genre=Family" class="genre-button">Family</a>
+                <a href="result.html?genre=Fantasy" class="genre-button">Fantasy</a>
+                <a href="result.html?genre=History" class="genre-button">History</a>
+                <a href="result.html?genre=Horror" class="genre-button">Horror</a>
+                <a href="result.html?genre=Music" class="genre-button">Music</a>
+                <a href="result.html?genre=Musical" class="genre-button">Musical</a>
+                <a href="result.html?genre=Mystery" class="genre-button">Mystery</a>
+                <a href="result.html?genre=Reality-TV" class="genre-button">Reality-TV</a>
+                <a href="result.html?genre=Romance" class="genre-button">Romance</a>
+                <a href="result.html?genre=Sci-Fi" class="genre-button">Sci-Fi</a>
+                <a href="result.html?genre=Sport" class="genre-button">Sport</a>
+                <a href="result.html?genre=Thriller" class="genre-button">Thriller</a>
+                <a href="result.html?genre=War" class="genre-button">War</a>
+                <a href="result.html?genre=Western" class="genre-button">Western</a>
             </div>
         </div>
     </div>

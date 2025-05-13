@@ -15,23 +15,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * A servlet that handles HTTP POST requests to the /api/search endpoint.
- */
-// Removed @WebServlet annotation to rely solely on web.xml for servlet mapping.
 public class SearchServlet extends HttpServlet {
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 
-    /**
-     * Handles HTTP POST requests to the /api/search endpoint.
-     *
-     * @param request  the HTTP request object
-     * @param response the HTTP response object
-     * @throws ServletException if there is a servlet-related error
-     * @throws IOException      if there is an I/O error
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -44,6 +32,8 @@ public class SearchServlet extends HttpServlet {
         String year = request.getParameter("year");
         String director = request.getParameter("director");
         String star = request.getParameter("star");
+        String startsWith = request.getParameter("startsWith");
+        String genre = request.getParameter("genre");
 
         try (Connection conn = dataSource.getConnection()) {
             if (conn == null) {
@@ -57,7 +47,11 @@ public class SearchServlet extends HttpServlet {
             query.append("LEFT JOIN ratings r ON m.id = r.movieId ");
             query.append("LEFT JOIN stars_in_movies sim ON m.id = sim.movieId ");
             query.append("LEFT JOIN stars s ON sim.starId = s.id ");
-            query.append("WHERE 1 = 1 ");
+            if (genre != null && !genre.isEmpty()) {
+                query.append("JOIN genres_in_movies gim ON m.id = gim.movieId ");
+                query.append("JOIN genres g ON gim.genreId = g.id ");
+            }
+            query.append("WHERE 1=1 ");
 
             if (title != null && !title.isEmpty()) {
                 query.append("AND m.title LIKE ? ");
@@ -73,6 +67,16 @@ public class SearchServlet extends HttpServlet {
                 query.append("SELECT 1 FROM stars s2 JOIN stars_in_movies sim2 ON s2.id = sim2.starId ");
                 query.append("WHERE sim2.movieId = m.id AND s2.name LIKE ? ");
                 query.append(") ");
+            }
+            if (startsWith != null && !startsWith.isEmpty()) {
+                if (startsWith.equals("*")) {
+                    query.append("AND m.title REGEXP '^[^A-Za-z0-9]' ");
+                } else {
+                    query.append("AND m.title LIKE ? ");
+                }
+            }
+            if (genre != null && !genre.isEmpty()) {
+                query.append("AND g.name = ? ");
             }
 
             query.append("GROUP BY m.id, m.title, m.year, m.director, r.rating ");
@@ -92,6 +96,12 @@ public class SearchServlet extends HttpServlet {
             if (star != null && !star.isEmpty()) {
                 statement.setString(paramIndex++, "%" + star + "%");
             }
+            if (startsWith != null && !startsWith.isEmpty() && !startsWith.equals("*")) {
+                statement.setString(paramIndex++, startsWith + "%");
+            }
+            if (genre != null && !genre.isEmpty()) {
+                statement.setString(paramIndex++, genre);
+            }
 
             ResultSet rs = statement.executeQuery();
             JSONArray movies = new JSONArray();
@@ -105,12 +115,8 @@ public class SearchServlet extends HttpServlet {
                 movies.put(movie);
             }
 
-            rs.close();
-            statement.close();
-
             out.write(movies.toString());
             response.setStatus(200);
-
         } catch (SQLException e) {
             e.printStackTrace();
             JSONObject error = new JSONObject();
@@ -123,7 +129,7 @@ public class SearchServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        doPost(request, response);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        doGet(request, response);
     }
 }

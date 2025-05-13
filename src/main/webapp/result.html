@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        select, label {
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Movie Results</h1>
+
+    <div class="controls">
+        <label for="sort">Sort by:</label>
+        <select id="sort">
+            <option value="title">Title</option>
+            <option value="rating">Rating</option>
+        </select>
+
+        <label for="order">Order:</label>
+        <select id="order">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+
+        <label for="limit">Movies per page:</label>
+        <select id="limit">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+        </select>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Year</th>
+                <th>Director</th>
+                <th>Rating</th>
+                <th>Stars</th>
+            </tr>
+        </thead>
+        <tbody id="movieResults"></tbody>
+    </table>
+
+    <script>
+        function getParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                title: params.get("title") || "",
+                year: params.get("year") || "",
+                director: params.get("director") || "",
+                star: params.get("star") || "",
+                genre: params.get("genre") || "",
+                startsWith: params.get("startsWith") || "",
+                sort: params.get("sort") || "title",
+                order: params.get("order") || "asc",
+                limit: params.get("limit") || "10"
+            };
+        }
+
+        function updateDropdowns(params) {
+            document.getElementById("sort").value = params.sort;
+            document.getElementById("order").value = params.order;
+            document.getElementById("limit").value = params.limit;
+        }
+
+        function fetchAndRender(params) {
+            const formData = new FormData();
+            for (const key in params) {
+                if (params[key]) {
+                    formData.append(key, params[key]);
+                }
+            }
+
+            fetch("/api/search", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(movies => {
+                const tbody = document.getElementById("movieResults");
+                tbody.innerHTML = "";
+                movies.forEach(movie => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${movie.title}</td>
+                        <td>${movie.year}</td>
+                        <td>${movie.director}</td>
+                        <td>${movie.rating}</td>
+                        <td>${movie.stars}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = getParams();
+            updateDropdowns(params);
+            fetchAndRender(params);
+
+            document.getElementById("sort").addEventListener("change", e => {
+                params.sort = e.target.value;
+                window.location.search = new URLSearchParams(params).toString();
+            });
+
+            document.getElementById("order").addEventListener("change", e => {
+                params.order = e.target.value;
+                window.location.search = new URLSearchParams(params).toString();
+            });
+
+            document.getElementById("limit").addEventListener("change", e => {
+                params.limit = e.target.value;
+                window.location.search = new URLSearchParams(params).toString();
+            });
+        });
+    </script>
+</body>
+</html>
