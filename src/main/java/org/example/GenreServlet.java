@@ -11,35 +11,38 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-// Removed @WebServlet annotation to rely solely on web.xml for servlet mapping.
 public class GenreServlet extends HttpServlet {
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+
+        String sql = "SELECT name FROM genres ORDER BY name ASC";
         JSONArray genresArray = new JSONArray();
+
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT id, name FROM genres")) {
-            while(rs.next()) {
-                JSONObject genreObj = new JSONObject();
-                genreObj.put("id", rs.getInt("id"));
-                genreObj.put("name", rs.getString("name"));
-                genresArray.put(genreObj);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                genresArray.put(rs.getString("name"));
             }
-        } catch(Exception e) {
+
+            out.write(genresArray.toString());
+            response.setStatus(HttpServletResponse.SC_OK);
+
+        } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return;
+            out.write("{\"error\": \"Failed to retrieve genres\"}");
+        } finally {
+            out.close();
         }
-        JSONObject result = new JSONObject();
-        result.put("genres", genresArray);
-        out.println(result.toString());
     }
 }

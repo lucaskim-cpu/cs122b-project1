@@ -105,7 +105,7 @@
                             <td>${movie.title}</td>
                             <td>${movie.year}</td>
                             <td>${movie.director}</td>
-                            <td>${movie.rating}</td>
+    <td>${Number(movie.rating).toFixed(1)}</td>
                             <td>${movie.stars}</td>
                         `;
                         movieResults.appendChild(row);

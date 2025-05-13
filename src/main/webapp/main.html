@@ -209,31 +209,24 @@
             </div>
 
             <h2>Browse by Genre</h2>
-            <div class="genres-grid">
-                <a href="result.html?genre=Action" class="genre-button">Action</a>
-                <a href="result.html?genre=Adult" class="genre-button">Adult</a>
-                <a href="result.html?genre=Adventure" class="genre-button">Adventure</a>
-                <a href="result.html?genre=Animation" class="genre-button">Animation</a>
-                <a href="result.html?genre=Biography" class="genre-button">Biography</a>
-                <a href="result.html?genre=Comedy" class="genre-button">Comedy</a>
-                <a href="result.html?genre=Crime" class="genre-button">Crime</a>
-                <a href="result.html?genre=Documentary" class="genre-button">Documentary</a>
-                <a href="result.html?genre=Drama" class="genre-button">Drama</a>
-                <a href="result.html?genre=Family" class="genre-button">Family</a>
-                <a href="result.html?genre=Fantasy" class="genre-button">Fantasy</a>
-                <a href="result.html?genre=History" class="genre-button">History</a>
-                <a href="result.html?genre=Horror" class="genre-button">Horror</a>
-                <a href="result.html?genre=Music" class="genre-button">Music</a>
-                <a href="result.html?genre=Musical" class="genre-button">Musical</a>
-                <a href="result.html?genre=Mystery" class="genre-button">Mystery</a>
-                <a href="result.html?genre=Reality-TV" class="genre-button">Reality-TV</a>
-                <a href="result.html?genre=Romance" class="genre-button">Romance</a>
-                <a href="result.html?genre=Sci-Fi" class="genre-button">Sci-Fi</a>
-                <a href="result.html?genre=Sport" class="genre-button">Sport</a>
-                <a href="result.html?genre=Thriller" class="genre-button">Thriller</a>
-                <a href="result.html?genre=War" class="genre-button">War</a>
-                <a href="result.html?genre=Western" class="genre-button">Western</a>
-            </div>
+            <div class="genres-grid" id="genreGrid"></div>
+            <script>
+                fetch("/api/genres", { credentials: "include" })
+                    .then(response => response.json())
+                    .then(genres => {
+                        const container = document.getElementById("genreGrid");
+                        container.innerHTML = "";
+                        genres.forEach(name => {
+                            const link = document.createElement("a");
+                            link.href = `result.html?genre=${encodeURIComponent(name)}`;
+                            link.className = "genre-button";
+                            link.textContent = name;
+                            container.appendChild(link);
+                        });
+                    })
+                    .catch(error => console.error("Failed to load genres:", error));
+            </script>
+
         </div>
     </div>
 
