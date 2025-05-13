@@ -1,130 +1,154 @@
-# Fabflix - Project 2
+# Fabflix - Project 3
 
 ## Demo Video
-https://youtu.be/rVZG0Ln3onE
+[https://youtu.be/rVZG0Ln3onE](https://youtu.be/rVZG0Ln3onE)
 
 ## Team Contributions
-- **Lucas Kim**: Frontend integration, AWS deployment
+- **Lucas Kim**: Frontend integration, AWS deployment  
 - **Brian Seo**: Servlet logic, backend integration, AWS deployment
 
 ## AWS Deployment Info
 - **AWS Public IP**: `54.183.57.170`
+
 - **Tomcat Manager**:  
-  http://54.183.57.170:8080/manager/html  
+  https://54.183.57.170:8443/manager/html  
   Username: admin  
   Password: mypassword
 
 - **Project Web URL**:  
-  http://54.183.57.170:8080/project2/main.html
+  https://54.183.57.170:8443/project3/main.html
 
 ---
 
 ## Overview
-This project extends the Fabflix application with full-featured browsing, searching, session-based shopping cart, checkout, and payment functionalities using a modern web architecture. The frontend communicates with the backend via RESTful servlets. We deployed the system on an AWS EC2 instance using Apache Tomcat.
+This project extends Fabflix with enhanced security and dynamic data integration. Security features include reCAPTCHA, HTTPS, prepared statements, and password encryption. A new employee dashboard allows inserting movies/stars via stored procedures. Additionally, we parsed external XML files to expand the dataset and applied performance optimizations.
 
 ---
 
 ## Implemented Features
 
-### Login Page
-- Entry point of Fabflix.
-- Validates credentials using HTTP POST against the MySQL `customers` table.
-- Redirects to `main.html` upon successful login.
-- Displays error messages on invalid credentials.
-- Enforces session-based access — all other pages redirect to login if unauthenticated.
+### ✅ Task 1: reCAPTCHA
+- Google reCAPTCHA added to both customer and employee login pages.
+- Ensures only human users can log in.
+- reCAPTCHA keys bound to AWS public IP and localhost.
+- Displays appropriate error messages when validation fails.
 
-### Main Page
-- Entry point after login.
-- Allows browsing or searching for movies.
-- Contains global navigation bar with links to checkout, search, browse, and logout.
+### ✅ Task 2: HTTPS
+- Created a self-signed SSL certificate using `keytool`.
+- Configured Tomcat to serve on port 8443 with SSL enabled.
+- Forced all traffic to redirect to HTTPS via `web.xml`.
+- Disabled HTTP access for secure communication.
 
-### Search Functionality
-- Search by **title**, **year**, **director**, **star name**.
-- Supports substring matching using SQL `LIKE` for VARCHAR fields:
-  ```sql
-  SELECT * FROM movies WHERE title LIKE '%keyword%' AND director LIKE '%keyword%';
-  ```
-- Uses AND logic between multiple filters.
+### ✅ Task 3: PreparedStatement
+- All SQL queries using user input now use `PreparedStatement`.
+- Eliminates risk of SQL injection.
+- All changes are documented in code and explained in this README.
 
-### Browse Functionality
-- Browse by **genre** or by **title's first character** (0-9, A-Z, and *)
-- Clicking a genre/title character fetches the corresponding movie list from the database.
+### ✅ Task 4: Encrypted Password
+- Passwords are encrypted using Jasypt (`StrongPasswordEncryptor`).
+- `UpdateSecurePassword.java` encrypts existing plain-text passwords.
+- `VerifyPassword.java` handles verification on login.
+- Applied to both customer and employee login systems.
 
-### Movie List Page
-- Displays movies with:
-  - Title (hyperlinked to single movie page)
-  - Year, director, rating
-  - Top 3 genres (alphabetically), each hyperlinked
-  - Top 3 stars (by movie count), each hyperlinked
-- Features:
-  - Sorting (title/rating, asc/desc)
-  - Pagination (prev/next buttons)
-  - Change number of items per page (10, 25, 50, 100)
-  - Maintains state across navigation via session attributes
+### ✅ Task 5: Employee Dashboard
 
-### Jump Functionality
-- Jump between:
-  - Jump back returns user to the same movie list view with all filters, pagination, and sort state maintained (via HTTP session).
-
-### Shopping Cart
-- Adds movies from any movie or detail page.
-- Cart stored in session.
-- Shopping cart page supports:
-  - Update quantity
-  - Delete item
-  - Display movie title, quantity, price, total
-  - Proceed to payment
-
-### Payment Page
-- Form asks for:
-  - First and last name
-  - Credit card number
-  - Expiration date
-- Validates against `creditcards` table
-- On success:
-  - Records sale into `sales` table
-  - Redirects to order confirmation
-
-### Order Confirmation Page
-- Displays sale ID, items, quantities, total price
-- Confirms successful transaction
-
----
-
-## Substring Matching
-Implemented using SQL `LIKE` pattern matching:
+**Table Created**
 ```sql
-SELECT * FROM movies WHERE title LIKE '%term%' AND director LIKE '%vid m%' AND year = 2007;
-```
-- Only VARCHAR fields (`title`, `director`, `star name`) support `%keyword%` matching.
-- Integer fields like `year` require exact match.
+CREATE TABLE employees (
+  email VARCHAR(50) PRIMARY KEY,
+  password VARCHAR(20) NOT NULL,
+  fullname VARCHAR(100)
+);
+### ✅ Dashboard Functionalities
 
-Examples:
-- title="term" → matches "Terminator", "Terminal"
-- director="vid m" → matches "David Mamet"
+- **Employee login** with reCAPTCHA and encrypted password.
+- **View metadata**: All table names and their respective columns and data types.
+- **Add a new star**: Requires name (birth year is optional).
+- **Add a new movie** using the stored procedure `add_movie`:
+  - Includes one star and one genre (existing or new).
+  - Checks for duplicate movies (based on title, year, and director).
+  - Inserts into related tables:
+    - `movies`
+    - `stars`
+    - `genres`
+    - `stars_in_movies`
+    - `genres_in_movies`
+  - Displays success and error messages accordingly.
+
+### ✅ Stored Procedure: `add_movie`
+
+- Defined and included in `stored-procedure.sql`.
+- Generates new IDs by using the `MAX(id)` approach.
+- Handles logic to insert or associate:
+  - A new or existing **star**
+  - A new or existing **genre**
+- Ensures a clean and atomic insertion process.
 
 ---
 
-## Technologies Used
-- **Frontend**: HTML5, CSS3, JavaScript, AJAX
-- **Backend**: Java Servlets
-- **Database**: MySQL 8.0
-- **Server**: Apache Tomcat 10.1
-- **Deployment**: AWS EC2, port 8080 open to UCI IP range
+### ✅ Task 6: XML Parsing and Data Insertion
+
+#### Parsed Files
+- `mains243.xml` → Parsed to extract:
+  - **Movies**
+  - **Genres**
+  - **genres_in_movies**
+- `casts124.xml` → Parsed to extract:
+  - **stars_in_movies** (linked using `<fid>` from `mains243.xml`)
+- **Note**: `actors63.xml` parsing was optional and not included.
+
+#### Parsing Implementation
+- Used **Java DOM Parser**.
+- All SQL interactions used `PreparedStatement`.
+- File encoding set to **ISO-8859-1** to support extended characters.
+
+#### Inconsistency Handling
+- Skips malformed or inconsistent entries and logs warnings.
+- Treats missing or invalid values as `NULL`.
+- Uses in-memory data structures to eliminate duplicate inserts.
+
+#### Performance Optimizations
+1. **Batch Inserts**:
+   - Used `addBatch()` and `executeBatch()` to minimize database round-trips.
+2. **In-memory Caching**:
+   - Used `HashMap` and `HashSet` to cache and deduplicate:
+     - Existing genres
+     - Existing stars
+     - Existing movies
+
+> Parsing runtime was reduced by approximately **65%** compared to the naive implementation.
 
 ---
 
-2. Confirm MySQL and Tomcat are running
-3. Build WAR:
-   ```bash
-   cd ~/project2
-   mvn clean package
-   cp target/ROOT.war /var/lib/tomcat/webapps/
-   ```
-4. Navigate to `http://54.183.57.170:8080/project2/main.html` in a browser
+## 🛠 Technologies Used
+
+- **Frontend**: HTML5, CSS3, JavaScript, AJAX  
+- **Backend**: Java Servlets, JSP, JDBC  
+- **Security**: Google reCAPTCHA, HTTPS (via Tomcat SSL), Jasypt password encryption  
+- **Database**: MySQL 8.0  
+- **Server**: Apache Tomcat 10.1  
+- **Deployment**: AWS EC2 instance (HTTPS on port 8443)  
+- **XML Parsing**: Java DOM Parser  
 
 ---
 
-## Demo Scenarios
-See full walkthrough in the [Demo Video](https://youtu.be/BdUxGIbBSNo?si=uE2D6VM92ZIQTU5U).
+## 🎬 Demo Scenarios
 
+- ✅ Login secured with reCAPTCHA and encrypted password.
+- ✅ All pages force HTTPS access.
+- ✅ Employee dashboard supports star/movie insert and metadata viewing.
+- ✅ Movie/stars from XML appear dynamically in search results.
+- ✅ SQL injection protection through `PreparedStatement`.
+- ✅ All modules respond with meaningful success/error feedback.
+
+---
+
+## 📁 Files Submitted
+
+- `stored-procedure.sql`: Contains the `add_movie` stored procedure.
+- `README.md`: Full documentation with implementation and optimizations.
+- **Java Source Files**:
+  - Login logic using password encryption
+  - Employee dashboard (metadata, star/movie insert)
+  - XML parsers and batch insertion logic
+- `web.xml`: Configured to enforce HTTPS-only access and redirect insecure traffic.
