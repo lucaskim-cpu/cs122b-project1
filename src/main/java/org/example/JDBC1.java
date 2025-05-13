@@ -1,3 +1,5 @@
+package org.example;
+
 import java.sql.*;
 
 public class JDBC1 implements Parameters {

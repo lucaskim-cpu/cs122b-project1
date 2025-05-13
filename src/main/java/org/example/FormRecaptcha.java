@@ -43,7 +43,7 @@ public class FormRecaptcha extends HttpServlet {
 
         String loginUser = "mytestuser";
         String loginPasswd = "My6$Password";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedbexample";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
         response.setContentType("text/html"); // Response mime type
 

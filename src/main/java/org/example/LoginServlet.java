@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
@@ -24,6 +26,7 @@ public class LoginServlet extends HttpServlet {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String userType = request.getParameter("userType"); // customer or employee
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
         // ✅ Verify reCAPTCHA
@@ -34,9 +37,18 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // ✅ Authenticate user
+        // ✅ Validate userType
+        if (userType == null || (!userType.equals("customer") && !userType.equals("employee"))) {
+            response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+user+type");
+            return;
+        }
+
+        String table = userType.equals("employee") ? "employees" : "customers";
+        String redirectSuccess = userType.equals("employee") ? "/fabflix/_dashboard/index.html" : "/main.html";
+        String redirectFail = userType.equals("employee") ? "/fabflix/_dashboard/login.html" : "/login.html";
+
         try (Connection conn = dataSource.getConnection()) {
-            String query = "SELECT password FROM customers WHERE email = ?";
+            String query = "SELECT password FROM " + table + " WHERE email = ?";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
@@ -44,15 +56,20 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 String storedPassword = rs.getString("password");
 
-                if (storedPassword != null && storedPassword.equals(password)) {
+                StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+                boolean loginSuccess = passwordEncryptor.checkPassword(password, storedPassword);
+
+                if (loginSuccess) {
                     HttpSession session = request.getSession();
                     session.setAttribute("user", email);
-                    response.sendRedirect(request.getContextPath() + "/main.html");
+                    session.setAttribute("userType", userType);
+                    response.sendRedirect(request.getContextPath() + redirectSuccess);
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+username+or+password");
+                    response.sendRedirect(request.getContextPath() + redirectFail + "?error=Invalid+username+or+password");
                 }
+
             } else {
-                response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+username+or+password");
+                response.sendRedirect(request.getContextPath() + redirectFail + "?error=Invalid+username+or+password");
             }
 
             rs.close();
@@ -60,7 +77,7 @@ public class LoginServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/login.html?error=Login+failed+due+to+server+error");
+            response.sendRedirect(request.getContextPath() + redirectFail + "?error=Login+failed+due+to+server+error");
         }
     }
 }

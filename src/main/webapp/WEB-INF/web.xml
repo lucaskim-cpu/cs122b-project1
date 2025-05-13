@@ -129,6 +129,19 @@
         <servlet-name>SessionCheckServlet</servlet-name>
         <url-pattern>/api/session-check</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SessionCheckServlet</servlet-name>
+        <url-pattern>/fabflix/_dashboard/check-session</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AddMovieServlet</servlet-name>
+        <servlet-class>org.example.AddMovieServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddMovieServlet</servlet-name>
+        <url-pattern>/fabflix/_dashboard/add-movie</url-pattern>
+    </servlet-mapping>
 
     <session-config>
         <session-timeout>
@@ -136,7 +149,6 @@
         </session-timeout>
     </session-config>
 
-    <!-- Optional: welcome page -->
     <welcome-file-list>
         <welcome-file>movie-list.html</welcome-file>
     </welcome-file-list>

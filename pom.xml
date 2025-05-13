@@ -23,7 +23,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.32</version> <!-- Use 8.0.32 if you're running into errors -->
+            <version>8.0.32</version>
         </dependency>
 
         <!-- Servlet API (provided by Tomcat at runtime) -->
@@ -49,13 +49,21 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Jasypt for password encryption -->
+        <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.9.3</version>
+        </dependency>
+
+        <!-- JSON (org.json) -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20231013</version>
-
         </dependency>
 
+        <!-- Optional: if any code uses javax.servlet API -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -70,6 +78,7 @@
             <version>2.10.1</version>
         </dependency>
 
+        <!-- BCrypt (optional; included in your original) -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
@@ -80,6 +89,7 @@
     <build>
         <finalName>ROOT</finalName>
         <plugins>
+            <!-- Compiler plugin -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
@@ -88,17 +98,18 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+
+            <!-- Exec plugin to run Java programs -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>org.example.MovieDomParser</mainClass> <!-- Change to JDBC2 when needed -->
-                    <includeProjectDependencies>true</includeProjectDependencies>
-                    <includePluginDependencies>false</includePluginDependencies>
-                    <classpathScope>compile</classpathScope>
+                    <mainClass>org.example.JDBC1</mainClass> <!-- Override with your parser -->
                 </configuration>
             </plugin>
+
+            <!-- Tomcat WAR deployment -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat9-maven-plugin</artifactId>
@@ -111,7 +122,8 @@
                     <password>password</password>
                 </configuration>
             </plugin>
-            <!-- WAR plugin to package the app -->
+
+            <!-- WAR Packaging -->
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>

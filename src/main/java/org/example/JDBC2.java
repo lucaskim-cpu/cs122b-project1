@@ -1,4 +1,5 @@
 //JDBC Example - deleting a record
+package org.example;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
