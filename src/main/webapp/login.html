@@ -33,6 +33,13 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
         button {
             width: 100%;
             padding: 0.75rem;
@@ -52,7 +59,7 @@
         }
     </style>
 
-    <!-- ✅ Google reCAPTCHA API script -->
+    <!-- Google reCAPTCHA API script -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
@@ -69,7 +76,7 @@
                 <input type="password" id="password" name="password" placeholder="Password" required>
             </div>
 
-            <!-- ✅ reCAPTCHA widget wrapped in form-group -->
+            <!-- reCAPTCHA widget wrapped in form-group -->
             <div class="form-group">
                 <div class="g-recaptcha" data-sitekey="6Ld8aTQrAAAAACblsi4AmqbgD0vjPjrQHEHnPSmu"></div>
             </div>

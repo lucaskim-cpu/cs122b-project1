@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.sql.DataSource;
@@ -26,10 +27,9 @@ public class LoginServlet extends HttpServlet {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        String userType = request.getParameter("userType"); // customer or employee
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
-        // ✅ Verify reCAPTCHA
+        // Verify reCAPTCHA
         try {
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
         } catch (Exception e) {
@@ -37,15 +37,13 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // ✅ Validate userType
-        if (userType == null || (!userType.equals("customer") && !userType.equals("employee"))) {
-            response.sendRedirect(request.getContextPath() + "/login.html?error=Invalid+user+type");
-            return;
-        }
+        // Determine user type based on URL
+        String requestURL = request.getRequestURL().toString();
+        boolean isDashboardLogin = requestURL.contains("/fabflix/_dashboard/login");
 
-        String table = userType.equals("employee") ? "employees" : "customers";
-        String redirectSuccess = userType.equals("employee") ? "/fabflix/_dashboard/index.html" : "/main.html";
-        String redirectFail = userType.equals("employee") ? "/fabflix/_dashboard/login.html" : "/login.html";
+        String table = isDashboardLogin ? "employees" : "customers";
+        String redirectSuccess = isDashboardLogin ? "/fabflix/_dashboard/index.html" : "/main.html";
+        String redirectFail = isDashboardLogin ? "/fabflix/_dashboard/login.html" : "/login.html";
 
         try (Connection conn = dataSource.getConnection()) {
             String query = "SELECT password FROM " + table + " WHERE email = ?";
@@ -57,15 +55,19 @@ public class LoginServlet extends HttpServlet {
                 String storedPassword = rs.getString("password");
 
                 StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-                boolean loginSuccess = passwordEncryptor.checkPassword(password, storedPassword);
+                try {
+                    boolean loginSuccess = passwordEncryptor.checkPassword(password, storedPassword);
 
-                if (loginSuccess) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("user", email);
-                    session.setAttribute("userType", userType);
-                    response.sendRedirect(request.getContextPath() + redirectSuccess);
-                } else {
-                    response.sendRedirect(request.getContextPath() + redirectFail + "?error=Invalid+username+or+password");
+                    if (loginSuccess) {
+                        HttpSession session = request.getSession();
+                        session.setAttribute("user", email);
+                        response.sendRedirect(request.getContextPath() + redirectSuccess);
+                    } else {
+                        response.sendRedirect(request.getContextPath() + redirectFail + "?error=Invalid+username+or+password");
+                    }
+                } catch (EncryptionOperationNotPossibleException e) {
+                    e.printStackTrace();
+                    response.sendRedirect(request.getContextPath() + redirectFail + "?error=Encryption+error");
                 }
 
             } else {
