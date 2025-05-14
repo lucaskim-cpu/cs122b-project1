@@ -1,7 +1,7 @@
+
 # 🎬 Fabflix - Project 3
 
 ## 🚀 Deployment Info
-- **Public IP**: `54.183.57.170`
 - **HTTPS URL**: https://100.27.203.228:8443/main.html
 - **Tomcat Manager**: https://100.27.203.228:8443/manager/html
 - **Credentials**:
@@ -13,7 +13,7 @@
 - **Lucas Kim** — Frontend Features, UI/UX, AWS Deployment
 
 ## 📽️ Demo Video
-Could not upload due to AWS server error...
+[Watch on YouTube](https://youtu.be/rVZG0Ln3onE)
 
 ---
 
@@ -37,3 +37,79 @@ Could not upload due to AWS server error...
   String query = "SELECT * FROM movies WHERE title LIKE ?";
   PreparedStatement ps = conn.prepareStatement(query);
   ps.setString(1, "%" + title + "%");
+  ```
+
+---
+
+## 🔐 Task 4: Password Encryption
+- Implemented encrypted password storage using **Jasypt's StrongPasswordEncryptor**.
+- `customers` and `employees` passwords are encrypted and checked via:
+  ```java
+  encryptor.checkPassword(inputPassword, encryptedPasswordFromDB);
+  ```
+- One-time encryption migration run via `UpdateSecurePassword.java`.
+
+---
+
+## 🧑‍💼 Task 5: Dashboard (Employee Portal)
+
+### Employee Login
+- reCAPTCHA + encrypted password verification.
+- Redirects to secure employee dashboard upon login.
+
+### View Metadata
+- Displays all table names with their columns and data types.
+
+### Add Star
+- Inputs:
+  - Name (required)
+  - Birth Year (optional)
+- Generates a unique star ID (e.g., `nm1234567`) using the current max ID.
+
+### Add Movie via Stored Procedure
+- Adds new movies and associates one **star** and one **genre**.
+- Prevents duplicates (same title + year + director).
+- Inserts into:
+  - `movies`
+  - `genres`
+  - `stars`
+  - `stars_in_movies`
+  - `genres_in_movies`
+- Stored procedure defined in `stored-procedure.sql`:
+  - Handles ID generation and conditional insertion.
+
+---
+
+## 📦 Task 6: XML Parsing and Data Insertion
+
+### Parsed Files
+- `mains243.xml`:
+  - Populates:
+    - `movies`
+    - `genres`
+    - `genres_in_movies`
+- `casts124.xml`:
+  - Populates:
+    - `stars_in_movies`
+  - Cross-references:
+    - `<fid>` from `mains243.xml`
+    - `<a>` (actor name) to existing stars
+
+### Parsing & Insertion
+- Used **Java DOM Parser**.
+- Inserted using `PreparedStatement`.
+- Set encoding to `ISO-8859-1`.
+
+### Error Handling
+- Skipped malformed entries, logged warnings.
+- Treated invalid or missing values as `NULL`.
+- Deduplicated entries (movies, genres, stars_in_movies).
+
+### Performance Optimizations
+- Used batch inserts:
+  ```java
+  pstmt.addBatch();
+  pstmt.executeBatch();
+  ```
+
+
