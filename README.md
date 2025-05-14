@@ -13,7 +13,7 @@
 - **Lucas Kim** — Frontend Features, UI/UX, AWS Deployment
 
 ## 📽️ Demo Video
-[Watch on YouTube](https://youtu.be/rVZG0Ln3onE)
+Could not upload due to AWS server error...
 
 ---
 
