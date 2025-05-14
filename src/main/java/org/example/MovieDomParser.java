@@ -34,8 +34,27 @@ public class MovieDomParser {
 
     private void parseXmlFiles() throws Exception {
         DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        domMovies = dBuilder.parse(new File("src/main/mains243.xml"));
-        domCasts = dBuilder.parse(new File("src/main/casts124.xml"));
+        // Use absolute paths to the XML files
+        String projectDir = new File(".").getAbsolutePath();
+        if (projectDir.endsWith(".")) {
+            projectDir = projectDir.substring(0, projectDir.length() - 1);
+        }
+        
+        // If running from target/classes, go up two levels
+        if (projectDir.endsWith("target\\classes")) {
+            projectDir = projectDir.substring(0, projectDir.indexOf("target\\classes"));
+        }
+        
+        System.out.println("Using project directory: " + projectDir);
+        
+        String mainsPath = projectDir + "src\\main\\mains243.xml";
+        String castsPath = projectDir + "src\\main\\casts124.xml";
+        
+        System.out.println("Loading movies XML from: " + mainsPath);
+        System.out.println("Loading casts XML from: " + castsPath);
+        
+        domMovies = dBuilder.parse(new File(mainsPath));
+        domCasts = dBuilder.parse(new File(castsPath));
         domMovies.getDocumentElement().normalize();
         domCasts.getDocumentElement().normalize();
     }

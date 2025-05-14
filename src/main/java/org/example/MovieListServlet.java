@@ -35,7 +35,7 @@ public class MovieListServlet extends HttpServlet {
 System.out.println("🟡 DataSource is null? " + (dataSource == null));
 
         try (Connection conn = dataSource.getConnection()) {
-            String query = "SELECT m.title, m.year, m.director, r.rating FROM movies m, ratings r WHERE m.id = r.movieId ORDER BY r.rating DESC LIMIT 20";
+            String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM movies m, ratings r WHERE m.id = r.movieId ORDER BY r.rating DESC LIMIT 20";
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet rs = statement.executeQuery();
 
@@ -43,6 +43,7 @@ System.out.println("🟡 DataSource is null? " + (dataSource == null));
 
             while (rs.next()) {
                 JSONObject movie = new JSONObject();
+                movie.put("id", rs.getString("id"));
                 movie.put("title", rs.getString("title"));
                 movie.put("year", rs.getInt("year"));
                 movie.put("director", rs.getString("director"));

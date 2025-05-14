@@ -20,19 +20,27 @@ public class GenreServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("[DEBUG] GenreServlet - doGet called");
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
         String sql = "SELECT name FROM genres ORDER BY name ASC";
         JSONArray genresArray = new JSONArray();
+        System.out.println("[DEBUG] GenreServlet - DataSource is null? " + (dataSource == null));
+        System.out.println("[DEBUG] GenreServlet - Executing SQL: " + sql);
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
+            int genreCount = 0;
             while (rs.next()) {
-                genresArray.put(rs.getString("name"));
+                String genreName = rs.getString("name");
+                genresArray.put(genreName);
+                genreCount++;
+                System.out.println("[DEBUG] GenreServlet - Found genre: " + genreName);
             }
+            System.out.println("[DEBUG] GenreServlet - Total genres found: " + genreCount);
 
             out.write(genresArray.toString());
             response.setStatus(HttpServletResponse.SC_OK);
