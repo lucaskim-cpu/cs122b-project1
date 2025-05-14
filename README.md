@@ -8,28 +8,28 @@
   - Username: `admin`
   - Password: `mypassword`
 
-## 👥 Team Members
-- **Brian Seo** — XML Parsing, Secure Auth Implementation, Backend Logic, Dashboard Integration  
-- **Lucas Kim** — Frontend Features, UI/UX, AWS Deployment
+## Team Members
+- **Brian Seo** — XML Parsing, recaptcha Implementation,HTTPs, and Prepared Statements for SQL injection Prevention
+- **Lucas Kim** — Frontend Features, UI/UX, AWS Deployment, Dashboard and Stored Procedures
 
-## 📽️ Demo Video
-[Watch on YouTube](https://youtu.be/rVZG0Ln3onE)
+## Demo Video
+could not film due to server timeout error
 
 ---
 
-## 🔐 Security Enhancements
+## Security Enhancements
 
-### ✅ Task 1: reCAPTCHA
+### Task 1: reCAPTCHA
 - Integrated Google reCAPTCHA on the login page.
 - Backend verifies reCAPTCHA token with Google's verification API.
 - Keys registered for both `localhost` and AWS IP.
 
-### ✅ Task 2: HTTPS
+### Task 2: HTTPS
 - Configured Tomcat SSL on port `8443` using a self-signed certificate.
 - All HTTP traffic redirected to HTTPS via `web.xml` security constraints.
 - HTTPS enforced on all sensitive endpoints (login, payment, employee dashboard).
 
-### ✅ Task 3: PreparedStatement
+### Task 3: PreparedStatement
 - All servlets use `PreparedStatement` to prevent SQL injection.
 - No user inputs are concatenated directly into SQL strings.
 - Example:
@@ -41,7 +41,7 @@
 
 ---
 
-## 🔐 Task 4: Password Encryption
+## Task 4: Password Encryption
 - Implemented encrypted password storage using **Jasypt's StrongPasswordEncryptor**.
 - `customers` and `employees` passwords are encrypted and checked via:
   ```java
@@ -51,7 +51,7 @@
 
 ---
 
-## 🧑‍💼 Task 5: Dashboard (Employee Portal)
+## Task 5: Dashboard (Employee Portal)
 
 ### Employee Login
 - reCAPTCHA + encrypted password verification.
@@ -80,7 +80,7 @@
 
 ---
 
-## 📦 Task 6: XML Parsing and Data Insertion
+## Task 6: XML Parsing and Data Insertion
 
 ### Parsed Files
 - `mains243.xml`:
