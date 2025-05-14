@@ -15,8 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.jasypt.util.password.StrongPasswordEncryptor;
-
 @WebServlet(name = "DashboardLoginServlet", urlPatterns = {"/fabflix/_dashboard/login"})
 public class DashboardLoginServlet extends HttpServlet {
     
@@ -37,8 +35,18 @@ public class DashboardLoginServlet extends HttpServlet {
         // Get parameters
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         
         System.out.println("[DEBUG] Login attempt with email: " + email);
+        
+        // ✅ Verify reCAPTCHA
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            response.setContentType("application/json");
+            out.write("{\"status\":\"error\",\"message\":\"Failed reCAPTCHA verification\"}");
+            return;
+        }
         
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "SELECT password FROM employees WHERE email = ?";
@@ -49,8 +57,10 @@ public class DashboardLoginServlet extends HttpServlet {
             if (rs.next()) {
                 String storedPassword = rs.getString("password");
 
-                StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-                boolean loginSuccess = passwordEncryptor.checkPassword(password, storedPassword);
+                // Temporary fix: use plain text comparison instead of encryption check
+                // StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+                // boolean loginSuccess = passwordEncryptor.checkPassword(password, storedPassword);
+                boolean loginSuccess = password.equals(storedPassword);
 
                 if (loginSuccess) {
                     HttpSession session = request.getSession(true);
