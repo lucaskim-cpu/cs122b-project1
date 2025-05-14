@@ -2,8 +2,8 @@
 
 ## 🚀 Deployment Info
 - **Public IP**: `54.183.57.170`
-- **HTTPS URL**: [https://54.183.57.170:8443/main.html](https://54.183.57.170:8443/main.html)
-- **Tomcat Manager**: [https://54.183.57.170:8443/manager/html](https://54.183.57.170:8443/manager/html)
+- **HTTPS URL**: https://100.27.203.228:8443/main.html
+- **Tomcat Manager**: https://100.27.203.228:8443/manager/html
 - **Credentials**:
   - Username: `admin`
   - Password: `mypassword`
