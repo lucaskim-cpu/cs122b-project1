@@ -1,19 +1,28 @@
 
 # 🎬 Fabflix - Project 3
 
-## 🚀 Deployment Info
-- **HTTPS URL**: https://100.27.203.228:8443/main.html
-- **Tomcat Manager**: https://100.27.203.228:8443/manager/html
-- **Credentials**:
-  - Username: `admin`
-  - Password: `mypassword`
+## Deployment Info
+- **URL(Customers)**: https://18.119.142.99:8443/main.html
+ - **Credentials**:
+   - email: `a2@email.com`
+   - Password: `a2`
+    
+- **URL(Employees)**: https://18.119.142.99:8443/fabflix/_dashboard/dashboard.html
+ - **Credentials**:
+   - email: `classta@email.edu`
+   - Password: `classta`
+     
+- **Tomcat Manager**: https://18.119.142.99:8443/manager/html
+ - **Credentials**:
+   - Username: `admin`
+   - Password: `mypassword`
 
 ## Team Members
-- **Brian Seo** — XML Parsing, recaptcha Implementation,HTTPs, and Prepared Statements for SQL injection Prevention
-- **Lucas Kim** — Frontend Features, UI/UX, AWS Deployment, Dashboard and Stored Procedures
+- **Brian Seo** — XML Parsing, recaptcha Implementation,HTTPs, and Prepared Statements for SQL injection Prevention, AWS Deployment
+- **Lucas Kim** — Frontend Features, UI/UX, Encryption, Dashboard and Stored Procedures
 
 ## Demo Video
-could not film due to server timeout error
+https://youtu.be/DaNoGcySF1w
 
 ---
 
@@ -48,6 +57,8 @@ could not film due to server timeout error
   encryptor.checkPassword(inputPassword, encryptedPasswordFromDB);
   ```
 - One-time encryption migration run via `UpdateSecurePassword.java`.
+
+- (Taken off due to internal error)
 
 ---
 
